@@ -19,8 +19,9 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Trash2, Edit, Save } from "lucide-react";
+import { Trash2, Edit, Save, KeyRound } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 
 interface User {
     id: number;
@@ -37,6 +38,7 @@ const UserTable: FC = () => {
   const [users, setUsers] = useState<User[]>(initialUsers);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedUser, setEditedUser] = useState<Partial<User>>({});
+  const { toast } = useToast();
 
   const handleEdit = (user: User) => {
     setEditingId(user.id);
@@ -56,6 +58,13 @@ const UserTable: FC = () => {
   const handleInputChange = (field: keyof User, value: string) => {
     setEditedUser(prev => ({ ...prev, [field]: value }));
   };
+
+  const handleResetPassword = (id: number) => {
+    toast({
+      title: "Feature not implemented",
+      description: "Password reset functionality is not yet available.",
+    });
+  }
 
   return (
     <Card>
@@ -99,6 +108,9 @@ const UserTable: FC = () => {
                     <div className="flex gap-2 justify-end">
                         <Button variant="ghost" size="icon" onClick={() => handleEdit(user)}>
                             <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => handleResetPassword(user.id)}>
+                            <KeyRound className="h-4 w-4" />
                         </Button>
                         <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={() => handleDelete(user.id)}>
                             <Trash2 className="h-4 w-4" />
