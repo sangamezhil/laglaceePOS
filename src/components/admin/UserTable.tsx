@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, type FC } from "react";
+import { useState, type FC, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -29,24 +29,22 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { addActivityLog } from "@/lib/activityLog";
+import type { User } from "@/lib/types";
 
-
-interface User {
-    id: number;
-    username: string;
-    role: 'admin' | 'cashier';
-}
 
 const initialUsers: User[] = [
     { id: 1, username: 'admin', role: 'admin' },
     { id: 2, username: 'cashier', role: 'cashier' },
 ]
 
-const UserTable: FC = () => {
+interface UserTableProps {
+  onUsersChange: (users: User[]) => void;
+}
+
+const UserTable: FC<UserTableProps> = ({ onUsersChange }) => {
   const [users, setUsers] = useState<User[]>(initialUsers);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedUser, setEditedUser] = useState<Partial<User>>({});
@@ -55,6 +53,9 @@ const UserTable: FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [newPassword, setNewPassword] = useState("");
 
+  useEffect(() => {
+    onUsersChange(users);
+  }, [users, onUsersChange]);
 
   const handleEdit = (user: User) => {
     setEditingId(user.id);

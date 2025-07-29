@@ -1,3 +1,4 @@
+
 export interface Product {
   id: number;
   name: string;
@@ -18,6 +19,12 @@ export interface Sale {
   items: CartItem[];
   total: number;
   paymentMethod: "Cash" | "UPI" | "Split";
+}
+
+export interface User {
+    id: number;
+    username: string;
+    role: 'admin' | 'cashier';
 }
 
 export interface ActivityLog {

@@ -30,6 +30,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import type { User } from "@/lib/types";
 
 interface DownloadHistoryItem {
   id: number;
@@ -37,15 +38,10 @@ interface DownloadHistoryItem {
   downloadedAt: Date;
 }
 
-// Mock user data for download, in a real app this would come from the UserTable state or an API
-const usersForDownload = [
-    { id: 1, username: 'admin', role: 'admin' },
-    { id: 2, username: 'cashier', role: 'cashier' },
-];
-
 export default function UserManagementPage() {
   const [date, setDate] = useState<DateRange | undefined>();
   const [downloadHistory, setDownloadHistory] = useState<DownloadHistoryItem[]>([]);
+  const [usersForDownload, setUsersForDownload] = useState<User[]>([]);
   const { toast } = useToast();
 
   const handleDownload = () => {
@@ -59,6 +55,9 @@ export default function UserManagementPage() {
     }
 
     const rangeString = `${format(date.from, "LLL dd, y")} - ${format(date.to, "LLL dd, y")}`;
+    
+    // In a real app, you would filter users by date range here.
+    // For now, we download all users.
     
     // 1. Convert user data to CSV format
     const headers = ["ID", "Username", "Role"];
@@ -147,7 +146,7 @@ export default function UserManagementPage() {
         </div>
       </div>
       
-      <UserTable />
+      <UserTable onUsersChange={setUsersForDownload} />
 
       {downloadHistory.length > 0 && (
         <Card>
