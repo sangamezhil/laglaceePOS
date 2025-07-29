@@ -68,13 +68,13 @@ const SalesHistoryTable: FC = () => {
                 { product: initialProducts[0], quantity: 1 },
                 { product: initialProducts[1], quantity: 1 },
             ],
-            total: 1.99 + 4.50,
+            total: initialProducts[0].price + initialProducts[1].price,
             paymentMethod: "Split",
         };
         setSales(prevSales => [todaySale, ...prevSales]);
     }
 
-  }, [sales]);
+  }, []);
 
   const openSaleDetails = (sale: Sale) => {
     setSelectedSale({ ...sale });
