@@ -23,6 +23,7 @@ export default function ProfilePage() {
     const [address, setAddress] = useState("");
     const [phone, setPhone] = useState("");
     const [taxId, setTaxId] = useState("");
+    const [logoUrl, setLogoUrl] = useState("");
 
     useEffect(() => {
         setCompanyName(localStorage.getItem("companyName") || "");
@@ -30,6 +31,7 @@ export default function ProfilePage() {
         setAddress(localStorage.getItem("address") || "");
         setPhone(localStorage.getItem("phone") || "");
         setTaxId(localStorage.getItem("taxId") || "");
+        setLogoUrl(localStorage.getItem("logoUrl") || "");
     }, []);
 
     const handleSaveChanges = () => {
@@ -38,6 +40,7 @@ export default function ProfilePage() {
         localStorage.setItem("address", address);
         localStorage.setItem("phone", phone);
         localStorage.setItem("taxId", taxId);
+        localStorage.setItem("logoUrl", logoUrl);
 
         toast({
             title: "Changes Saved",
@@ -68,9 +71,13 @@ export default function ProfilePage() {
                 <Input id="company-name" placeholder="Your Company Inc." value={companyName} onChange={(e) => setCompanyName(e.target.value)} />
             </div>
              <div className="space-y-2">
-                <Label htmlFor="contact-email">Contact Email</Label>
-                <Input id="contact-email" type="email" placeholder="contact@yourcompany.com" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} />
+                <Label htmlFor="logo-url">Company Logo URL</Label>
+                <Input id="logo-url" placeholder="https://placehold.co/100x100.png" value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} />
             </div>
+          </div>
+           <div className="space-y-2">
+            <Label htmlFor="contact-email">Contact Email</Label>
+            <Input id="contact-email" type="email" placeholder="contact@yourcompany.com" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} />
           </div>
            <div className="space-y-2">
             <Label htmlFor="address">Address</Label>

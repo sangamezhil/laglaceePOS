@@ -27,6 +27,7 @@ const POSPage: FC = () => {
   const [userRole, setUserRole] = useState('cashier'); // Default to cashier
   const [userInitial, setUserInitial] = useState('C');
   const [appName, setAppName] = useState("ShopSwift");
+  const [logoUrl, setLogoUrl] = useState("");
   const productGridRef = useRef<ProductGridHandle>(null);
 
   useEffect(() => {
@@ -39,6 +40,10 @@ const POSPage: FC = () => {
     if (storedAppName) {
       setAppName(storedAppName);
       document.title = storedAppName;
+    }
+    const storedLogoUrl = localStorage.getItem("logoUrl");
+    if (storedLogoUrl) {
+      setLogoUrl(storedLogoUrl);
     }
 
   }, []);
@@ -87,7 +92,7 @@ const POSPage: FC = () => {
   return (
     <div className="flex flex-col h-screen bg-background font-body">
       <header className="flex items-center justify-between px-6 py-3 border-b bg-card">
-        <Logo appName={appName} />
+        <Logo appName={appName} logoUrl={logoUrl}/>
         <div className="flex items-center gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

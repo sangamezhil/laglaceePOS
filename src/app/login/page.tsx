@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, type FC } from "react";
+import { useState, type FC, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,6 +22,19 @@ const LoginPage: FC = () => {
   const { toast } = useToast();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [appName, setAppName] = useState("ShopSwift");
+  const [logoUrl, setLogoUrl] = useState("");
+
+  useEffect(() => {
+    const storedAppName = localStorage.getItem("companyName");
+    if (storedAppName) {
+      setAppName(storedAppName);
+    }
+    const storedLogoUrl = localStorage.getItem("logoUrl");
+    if (storedLogoUrl) {
+      setLogoUrl(storedLogoUrl);
+    }
+  }, []);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,7 +89,7 @@ const LoginPage: FC = () => {
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4">
-            <Logo />
+            <Logo appName={appName} logoUrl={logoUrl}/>
           </div>
           <CardTitle className="font-headline">Welcome Back</CardTitle>
           <CardDescription>Enter your credentials to access your account.</CardDescription>
