@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ShopSwiftLogo } from '@/components/pos/ShopSwiftLogo';
-import { LayoutDashboard, LogOut, Package, User, History, Users } from 'lucide-react';
+import { LayoutDashboard, LogOut, Package, User, History, Users, Activity } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,6 +40,10 @@ export default function AdminLayout({
           <Link href="/admin/users" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
             <Users className="h-4 w-4" />
             User Management
+          </Link>
+          <Link href="/admin/activity-log" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
+            <Activity className="h-4 w-4" />
+            Activity Log
           </Link>
         </nav>
         <div className="md:hidden">
@@ -87,6 +91,12 @@ export default function AdminLayout({
                   <Link href="/admin/users">
                     <Users className="mr-2 h-4 w-4" />
                     <span>User Management</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/admin/activity-log">
+                    <Activity className="mr-2 h-4 w-4" />
+                    <span>Activity Log</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />

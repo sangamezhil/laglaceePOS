@@ -19,3 +19,14 @@ export interface Sale {
   total: number;
   paymentMethod: "Cash" | "UPI" | "Split";
 }
+
+export interface ActivityLog {
+  id: string;
+  user: {
+    name: string;
+    role: 'admin' | 'cashier';
+  };
+  action: string;
+  details: string;
+  date: string;
+}
