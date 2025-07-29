@@ -52,29 +52,33 @@ const SalesHistoryTable: FC = () => {
     const role = localStorage.getItem('userRole') || 'cashier';
     setUserRole(role);
 
-    const today = new Date();
-    const hasTodaySale = sales.some(s => {
-        const saleDate = new Date(s.date);
-        return saleDate.getDate() === today.getDate() &&
-               saleDate.getMonth() === today.getMonth() &&
-               saleDate.getFullYear() === today.getFullYear();
+    setSales(prevSales => {
+        const today = new Date();
+        const hasTodaySale = prevSales.some(s => {
+            const saleDate = new Date(s.date);
+            return saleDate.getDate() === today.getDate() &&
+                   saleDate.getMonth() === today.getMonth() &&
+                   saleDate.getFullYear() === today.getFullYear();
+        });
+
+        if (!hasTodaySale) {
+            const todaySale: Sale = {
+                id: `sale-${Date.now()}`, // Unique ID for today's sale
+                date: today.toISOString(),
+                items: [
+                    { product: initialProducts[0], quantity: 1 },
+                    { product: initialProducts[1], quantity: 1 },
+                ],
+                total: initialProducts[0].price + initialProducts[1].price,
+                paymentMethod: "Split",
+            };
+            return [todaySale, ...prevSales];
+        }
+        return prevSales;
     });
-
-    if (!hasTodaySale) {
-        const todaySale: Sale = {
-            id: `sale-${Date.now()}`, // Unique ID
-            date: today.toISOString(),
-            items: [
-                { product: initialProducts[0], quantity: 1 },
-                { product: initialProducts[1], quantity: 1 },
-            ],
-            total: initialProducts[0].price + initialProducts[1].price,
-            paymentMethod: "Split",
-        };
-        setSales(prevSales => [todaySale, ...prevSales]);
-    }
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
 
   const openSaleDetails = (sale: Sale) => {
     setSelectedSale({ ...sale });
