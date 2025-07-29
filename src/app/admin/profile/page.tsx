@@ -50,6 +50,18 @@ export default function ProfilePage() {
         window.location.reload();
     }
 
+    const handleLogoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result as string;
+                setLogoUrl(base64String);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
   return (
     <div className="space-y-6">
       <div>
@@ -71,8 +83,14 @@ export default function ProfilePage() {
                 <Input id="company-name" placeholder="Your Company Inc." value={companyName} onChange={(e) => setCompanyName(e.target.value)} />
             </div>
              <div className="space-y-2">
-                <Label htmlFor="logo-url">Company Logo URL</Label>
-                <Input id="logo-url" placeholder="https://placehold.co/100x100.png" value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} />
+                <Label htmlFor="logo-file">Company Logo</Label>
+                <Input id="logo-file" type="file" accept="image/*" onChange={handleLogoChange} />
+                 {logoUrl && (
+                    <div className="mt-4">
+                        <img src={logoUrl} alt="Logo Preview" className="h-20 w-auto object-contain rounded-md border p-2" />
+                        <p className="text-xs text-muted-foreground mt-1">Logo Preview</p>
+                    </div>
+                 )}
             </div>
           </div>
            <div className="space-y-2">
