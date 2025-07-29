@@ -53,6 +53,10 @@ const LoginPage: FC = () => {
     }
 
     if (loginSuccess) {
+      // In a real app, you'd use a more robust session management system.
+      // For this prototype, localStorage is sufficient.
+      localStorage.setItem('userRole', role);
+
       toast({
         title: "Login Successful",
         description: `Logged in as ${role}. Redirecting...`,

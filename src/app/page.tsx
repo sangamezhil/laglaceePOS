@@ -1,14 +1,14 @@
 
 "use client";
 
-import { useState, type FC } from "react";
+import { useState, type FC, useEffect } from "react";
 import type { Product, CartItem } from "@/lib/types";
 import { initialProducts } from "@/data/products";
 import ProductGrid from "@/components/pos/ProductGrid";
 import Cart from "@/components/pos/Cart";
 import { ShopSwiftLogo } from "@/components/pos/ShopSwiftLogo";
 import { Button } from "@/components/ui/button";
-import { History, LogOut } from "lucide-react";
+import { History, LogOut, LayoutDashboard, Package, Users } from "lucide-react";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -24,6 +24,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const POSPage: FC = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [products] = useState<Product[]>(initialProducts);
+  const [userRole, setUserRole] = useState('cashier'); // Default to cashier
+  const [userInitial, setUserInitial] = useState('C');
+
+  useEffect(() => {
+    // In a real app, you'd get this from a proper auth context/session.
+    const role = localStorage.getItem('userRole') || 'cashier';
+    setUserRole(role);
+    setUserInitial(role.charAt(0).toUpperCase());
+  }, []);
 
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
@@ -59,6 +68,8 @@ const POSPage: FC = () => {
     setCart([]);
   };
 
+  const isAdmin = userRole === 'admin';
+
   return (
     <div className="flex flex-col h-screen bg-background font-body">
       <header className="flex items-center justify-between px-6 py-3 border-b bg-card">
@@ -69,22 +80,44 @@ const POSPage: FC = () => {
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                   <Avatar className="h-10 w-10">
                     <AvatarImage src="https://placehold.co/100x100" alt="User" />
-                    <AvatarFallback>U</AvatarFallback>
+                    <AvatarFallback>{userInitial}</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">Cashier</p>
+                    <p className="text-sm font-medium leading-none capitalize">{userRole}</p>
                     <p className="text-xs leading-none text-muted-foreground">
-                      cashier
+                      {userRole}
                     </p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                 {isAdmin && (
+                  <>
+                     <DropdownMenuItem asChild>
+                      <Link href="/admin/inventory">
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        <span>Dashboard</span>
+                      </Link>
+                    </DropdownMenuItem>
+                     <DropdownMenuItem asChild>
+                      <Link href="/admin/inventory">
+                        <Package className="mr-2 h-4 w-4" />
+                        <span>Inventory</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/admin/users">
+                        <Users className="mr-2 h-4 w-4" />
+                        <span>Users</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
                 <DropdownMenuItem asChild>
-                  <Link href="/sales-history">
+                   <Link href={isAdmin ? "/admin/sales-history" : "/sales-history"}>
                     <History className="mr-2 h-4 w-4" />
                     <span>Sales History</span>
                   </Link>
