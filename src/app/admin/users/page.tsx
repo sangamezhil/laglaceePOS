@@ -64,15 +64,20 @@ export default function UserManagementPage() {
     const activityLogData = getActivityLog();
     const productsData = initialProducts; // This could be enhanced to fetch from a live state if needed
 
+    // Set end of day for the 'to' date for inclusive filtering
+    const fromDate = date.from;
+    const toDate = new Date(date.to);
+    toDate.setHours(23, 59, 59, 999);
+
     // Filter data based on the selected date range
     const filteredSales = salesData.filter((sale: any) => {
         const saleDate = new Date(sale.date);
-        return saleDate >= date!.from! && saleDate <= date!.to!;
+        return saleDate >= fromDate && saleDate <= toDate;
     });
 
     const filteredActivity = activityLogData.filter(log => {
         const logDate = new Date(log.date);
-        return logDate >= date!.from! && logDate <= date!.to!;
+        return logDate >= fromDate && logDate <= toDate;
     });
     
     // 2. Create a new workbook
