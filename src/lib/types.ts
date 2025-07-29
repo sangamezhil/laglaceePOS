@@ -22,10 +22,8 @@ export interface Sale {
 
 export interface ActivityLog {
   id: string;
-  user: {
-    name: string;
-    role: 'admin' | 'cashier';
-  };
+  username: string;
+  role: 'admin' | 'cashier';
   action: string;
   details: string;
   date: string;

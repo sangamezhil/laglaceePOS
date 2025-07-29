@@ -46,9 +46,9 @@ const ActivityLogTable: FC = () => {
           <TableBody>
             {logs.map((log) => (
               <TableRow key={log.id}>
-                <TableCell className="font-medium">{log.user.name}</TableCell>
+                <TableCell className="font-medium">{log.username}</TableCell>
                 <TableCell>
-                   <Badge variant={log.user.role === 'admin' ? 'destructive' : 'secondary'}>{log.user.role}</Badge>
+                   <Badge variant={log.role === 'admin' ? 'destructive' : 'secondary'}>{log.role}</Badge>
                 </TableCell>
                 <TableCell>{log.action}</TableCell>
                 <TableCell className="text-muted-foreground">{log.details}</TableCell>
