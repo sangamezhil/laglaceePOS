@@ -71,7 +71,7 @@ export default function InventoryPage() {
               <DialogHeader>
                 <DialogTitle>Import Products</DialogTitle>
                 <DialogDescription>
-                  Select an Excel file to import new products into your inventory. The file should have columns: name, price, stock, category, sku.
+                  Select an Excel file to import new products into your inventory. The file should have columns: name, price, stock, category, barcode.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
