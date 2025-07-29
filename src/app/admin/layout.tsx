@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/pos/ShopSwiftLogo';
-import { LayoutDashboard, LogOut, Package, User, History, Users, Activity } from 'lucide-react';
+import { LayoutDashboard, LogOut, Package, User, History, Users, Activity, ChevronDown } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -69,11 +69,9 @@ export default function AdminLayout({
         <div>
            <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src="https://placehold.co/100x100" alt="Admin" />
-                    <AvatarFallback>A</AvatarFallback>
-                  </Avatar>
+                 <Button variant="ghost" className="flex items-center gap-2">
+                  <span>Admin</span>
+                  <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>

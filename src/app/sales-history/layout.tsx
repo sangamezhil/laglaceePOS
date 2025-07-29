@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/pos/ShopSwiftLogo';
-import { LayoutDashboard, LogOut, History, Package, Users, Activity, User } from 'lucide-react';
+import { LayoutDashboard, LogOut, History, Package, Users, Activity, User, ChevronDown } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -86,11 +86,9 @@ export default function SalesHistoryLayout({
         <div>
            <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src="https://placehold.co/100x100" alt="User" />
-                    <AvatarFallback>{userInitial}</AvatarFallback>
-                  </Avatar>
+                <Button variant="ghost" className="flex items-center gap-2">
+                  <span className="capitalize">{userRole}</span>
+                  <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
