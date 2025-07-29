@@ -53,11 +53,16 @@ const SalesHistoryTable: FC = () => {
     setUserRole(role);
 
     const today = new Date();
-    const hasTodaySale = sales.some(s => new Date(s.date).toDateString() === today.toDateString());
+    const hasTodaySale = sales.some(s => {
+        const saleDate = new Date(s.date);
+        return saleDate.getDate() === today.getDate() &&
+               saleDate.getMonth() === today.getMonth() &&
+               saleDate.getFullYear() === today.getFullYear();
+    });
 
     if (!hasTodaySale) {
         const todaySale: Sale = {
-            id: "sale-today",
+            id: `sale-${Date.now()}`, // Unique ID
             date: today.toISOString(),
             items: [
                 { product: initialProducts[0], quantity: 1 },
@@ -69,7 +74,7 @@ const SalesHistoryTable: FC = () => {
         setSales(prevSales => [todaySale, ...prevSales]);
     }
 
-  }, []);
+  }, [sales]);
 
   const openSaleDetails = (sale: Sale) => {
     setSelectedSale({ ...sale });
