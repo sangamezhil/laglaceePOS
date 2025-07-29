@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, type FC } from "react";
+import { useState, type FC, useMemo } from "react";
 import type { Sale } from "@/lib/types";
 import { initialSales } from "@/data/sales";
 import {
@@ -27,7 +27,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
@@ -45,6 +44,17 @@ const SalesHistoryTable: FC = () => {
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const { toast } = useToast();
+
+  // A simple way to determine the user's role. In a real app, this would come from an auth context.
+  const userRole = useMemo(() => {
+    // This is a mock. In a real app, you would get the user role from your authentication system.
+    // For now, we assume 'admin' if they can access the full admin layout.
+    // A better check might involve checking the current URL path.
+    if (typeof window !== 'undefined') {
+        return window.location.pathname.startsWith('/admin') ? 'admin' : 'cashier';
+    }
+    return 'cashier';
+  }, []);
 
   const openSaleDetails = (sale: Sale) => {
     setSelectedSale({ ...sale });
@@ -71,6 +81,8 @@ const SalesHistoryTable: FC = () => {
       setDialogOpen(false);
     }
   };
+
+  const isUserAdmin = userRole === 'admin';
 
   return (
     <Card>
@@ -138,6 +150,7 @@ const SalesHistoryTable: FC = () => {
                     <Select
                       value={selectedSale.paymentMethod}
                       onValueChange={(value: Sale['paymentMethod']) => handlePaymentMethodChange(value)}
+                      disabled={!isUserAdmin}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select payment method" />
@@ -175,10 +188,12 @@ const SalesHistoryTable: FC = () => {
                 <DialogClose asChild>
                   <Button variant="outline">Close</Button>
                 </DialogClose>
-                <Button onClick={handleSaveChanges}>
-                  <Save className="mr-2 h-4 w-4" />
-                  Save Changes
-                </Button>
+                {isUserAdmin && (
+                   <Button onClick={handleSaveChanges}>
+                    <Save className="mr-2 h-4 w-4" />
+                    Save Changes
+                  </Button>
+                )}
               </DialogFooter>
             </DialogContent>
           </Dialog>

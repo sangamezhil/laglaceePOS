@@ -24,7 +24,7 @@ const ProductGrid: FC<ProductGridProps> = ({ products, onAddToCart }) => {
     return products.filter(
       (p) =>
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.sku.toLowerCase().includes(searchTerm.toLowerCase())
+        p.barcode.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [products, searchTerm]);
 

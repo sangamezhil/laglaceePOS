@@ -74,12 +74,12 @@ const InventoryTable: FC = () => {
                   {editingId === product.id ? (
                     <Input
                       type="text"
-                      value={editedProduct.sku ?? product.sku}
-                      onChange={(e) => handleInputChange('sku', e.target.value)}
+                      value={editedProduct.barcode ?? product.barcode}
+                      onChange={(e) => handleInputChange('barcode', e.target.value)}
                       className="h-8"
                     />
                   ) : (
-                    product.sku
+                    product.barcode
                   )}
                 </TableCell>
                 <TableCell>{product.category}</TableCell>

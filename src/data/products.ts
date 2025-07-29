@@ -7,7 +7,7 @@ export const initialProducts: Product[] = [
     price: 1.99,
     stock: 50,
     category: "Produce",
-    sku: "PROD-AVO-001",
+    barcode: "PROD-AVO-001",
   },
   {
     id: 2,
@@ -15,7 +15,7 @@ export const initialProducts: Product[] = [
     price: 4.5,
     stock: 25,
     category: "Bakery",
-    sku: "BAKE-SD-002",
+    barcode: "BAKE-SD-002",
   },
   {
     id: 3,
@@ -23,7 +23,7 @@ export const initialProducts: Product[] = [
     price: 3.99,
     stock: 40,
     category: "Dairy",
-    sku: "DAIRY-EGG-003",
+    barcode: "DAIRY-EGG-003",
   },
   {
     id: 4,
@@ -31,7 +31,7 @@ export const initialProducts: Product[] = [
     price: 5.25,
     stock: 30,
     category: "Beverages",
-    sku: "BEV-CB-004",
+    barcode: "BEV-CB-004",
   },
   {
     id: 5,
@@ -39,7 +39,7 @@ export const initialProducts: Product[] = [
     price: 3.75,
     stock: 60,
     category: "Snacks",
-    sku: "SNACK-DC-005",
+    barcode: "SNACK-DC-005",
   },
   {
     id: 6,
@@ -47,7 +47,7 @@ export const initialProducts: Product[] = [
     price: 2.5,
     stock: 15,
     category: "Produce",
-    sku: "PROD-KL-006",
+    barcode: "PROD-KL-006",
   },
   {
     id: 7,
@@ -55,7 +55,7 @@ export const initialProducts: Product[] = [
     price: 3.2,
     stock: 0,
     category: "Dairy",
-    sku: "DAIRY-AM-007",
+    barcode: "DAIRY-AM-007",
   },
   {
     id: 8,
@@ -63,7 +63,7 @@ export const initialProducts: Product[] = [
     price: 2.1,
     stock: 75,
     category: "Pantry",
-    sku: "PANT-WWP-008",
+    barcode: "PANT-WWP-008",
   },
    {
     id: 9,
@@ -71,7 +71,7 @@ export const initialProducts: Product[] = [
     price: 2.99,
     stock: 45,
     category: "Produce",
-    sku: "PROD-TOM-009",
+    barcode: "PROD-TOM-009",
   },
   {
     id: 10,
@@ -79,7 +79,7 @@ export const initialProducts: Product[] = [
     price: 2.25,
     stock: 18,
     category: "Bakery",
-    sku: "BAKE-CR-010",
+    barcode: "BAKE-CR-010",
   },
   {
     id: 11,
@@ -87,7 +87,7 @@ export const initialProducts: Product[] = [
     price: 1.75,
     stock: 35,
     category: "Dairy",
-    sku: "DAIRY-GY-011",
+    barcode: "DAIRY-GY-011",
   },
   {
     id: 12,
@@ -95,6 +95,6 @@ export const initialProducts: Product[] = [
     price: 4.99,
     stock: 22,
     category: "Beverages",
-    sku: "BEV-KM-012",
+    barcode: "BEV-KM-012",
   },
 ];
