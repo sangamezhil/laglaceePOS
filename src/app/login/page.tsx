@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, type FC } from "react";
@@ -13,14 +14,12 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ShopSwiftLogo } from "@/components/pos/ShopSwiftLogo";
 import { useToast } from "@/hooks/use-toast";
 
 const LoginPage: FC = () => {
   const router = useRouter();
   const { toast } = useToast();
-  const [role, setRole] = useState("cashier");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -41,17 +40,16 @@ const LoginPage: FC = () => {
 
     let loginSuccess = false;
     let redirectPath = "";
+    let role = "";
 
-    if (role === "admin") {
-      if (email === adminCredentials.email && password === adminCredentials.password) {
-        loginSuccess = true;
-        redirectPath = "/admin/inventory";
-      }
-    } else if (role === "cashier") {
-      if (email === cashierCredentials.email && password === cashierCredentials.password) {
-        loginSuccess = true;
-        redirectPath = "/";
-      }
+    if (email === adminCredentials.email && password === adminCredentials.password) {
+      loginSuccess = true;
+      redirectPath = "/admin/inventory";
+      role = "admin";
+    } else if (email === cashierCredentials.email && password === cashierCredentials.password) {
+      loginSuccess = true;
+      redirectPath = "/";
+      role = "cashier";
     }
 
     if (loginSuccess) {
@@ -64,7 +62,7 @@ const LoginPage: FC = () => {
       toast({
         variant: "destructive",
         title: "Login Failed",
-        description: "Invalid email, password, or role.",
+        description: "Invalid email or password.",
       });
     }
   };
@@ -88,19 +86,6 @@ const LoginPage: FC = () => {
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-            </div>
-            <div className="space-y-2">
-              <Label>Role</Label>
-              <RadioGroup defaultValue="cashier" value={role} onValueChange={setRole} className="flex gap-4">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="cashier" id="r-cashier" />
-                  <Label htmlFor="r-cashier">Cashier</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="admin" id="r-admin" />
-                  <Label htmlFor="r-admin">Admin</Label>
-                </div>
-              </RadioGroup>
             </div>
           </CardContent>
           <CardFooter>
