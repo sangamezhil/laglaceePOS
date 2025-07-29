@@ -21,13 +21,15 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Eye, Receipt } from "lucide-react";
+import { Eye, Receipt, Save } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
+  DialogClose,
 } from "@/components/ui/dialog";
 import {
   Select,
@@ -35,19 +37,40 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 
 const SalesHistoryTable: FC = () => {
   const [sales, setSales] = useState<Sale[]>(initialSales);
+  const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const { toast } = useToast();
 
-  const handlePaymentMethodChange = (saleId: string, newMethod: Sale['paymentMethod']) => {
-    setSales(prevSales => 
-      prevSales.map(sale => 
-        sale.id === saleId ? { ...sale, paymentMethod: newMethod } : sale
-      )
-    );
+  const openSaleDetails = (sale: Sale) => {
+    setSelectedSale({ ...sale });
+    setDialogOpen(true);
   };
 
+  const handlePaymentMethodChange = (newMethod: Sale['paymentMethod']) => {
+    if (selectedSale) {
+      setSelectedSale({ ...selectedSale, paymentMethod: newMethod });
+    }
+  };
+
+  const handleSaveChanges = () => {
+    if (selectedSale) {
+      setSales(prevSales =>
+        prevSales.map(sale =>
+          sale.id === selectedSale.id ? selectedSale : sale
+        )
+      );
+      toast({
+        title: "Changes Saved",
+        description: "The payment method has been updated.",
+      });
+      setDialogOpen(false);
+    }
+  };
 
   return (
     <Card>
@@ -86,70 +109,80 @@ const SalesHistoryTable: FC = () => {
                   Rs.{sale.total.toFixed(2)}
                 </TableCell>
                 <TableCell className="text-right">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-lg">
-                      <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2">
-                           <Receipt className="h-5 w-5" />
-                           Sale Details - #{sale.id.slice(0, 8)}
-                        </DialogTitle>
-                      </DialogHeader>
-                      <div className="space-y-4">
-                        <div className="grid grid-cols-2 gap-4 text-sm">
-                            <div>
-                                <p className="text-muted-foreground">Date</p>
-                                <p>{new Date(sale.date).toLocaleString()}</p>
-                            </div>
-                             <div>
-                                <p className="text-muted-foreground">Payment Method</p>
-                                <Select 
-                                  value={sale.paymentMethod}
-                                  onValueChange={(value: Sale['paymentMethod']) => handlePaymentMethodChange(sale.id, value)}
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select payment method" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="Cash">Cash</SelectItem>
-                                    <SelectItem value="UPI">UPI</SelectItem>
-                                    <SelectItem value="Split">Split</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-
-                        <Card>
-                            <CardContent className="p-4 space-y-4">
-                                {sale.items.map(item => (
-                                    <div key={item.product.id} className="flex items-center justify-between">
-                                        <div className="flex items-center gap-4">
-                                            <div>
-                                                <p className="font-medium">{item.product.name}</p>
-                                                <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
-                                            </div>
-                                        </div>
-                                        <p className="font-medium">Rs.{(item.product.price * item.quantity).toFixed(2)}</p>
-                                    </div>
-                                ))}
-                            </CardContent>
-                        </Card>
-                        <div className="flex justify-end items-center font-bold text-xl">
-                            <span className="mr-4 text-muted-foreground">Total:</span>
-                            <span>Rs.{sale.total.toFixed(2)}</span>
-                        </div>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
+                  <Button variant="ghost" size="icon" onClick={() => openSaleDetails(sale)}>
+                    <Eye className="h-4 w-4" />
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
+
+        {selectedSale && (
+          <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+            <DialogContent className="max-w-lg">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <Receipt className="h-5 w-5" />
+                  Sale Details - #{selectedSale.id.slice(0, 8)}
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p className="text-muted-foreground">Date</p>
+                    <p>{new Date(selectedSale.date).toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Payment Method</p>
+                    <Select
+                      value={selectedSale.paymentMethod}
+                      onValueChange={(value: Sale['paymentMethod']) => handlePaymentMethodChange(value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select payment method" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Cash">Cash</SelectItem>
+                        <SelectItem value="UPI">UPI</SelectItem>
+                        <SelectItem value="Split">Split</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <Card>
+                  <CardContent className="p-4 space-y-4">
+                    {selectedSale.items.map(item => (
+                      <div key={item.product.id} className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div>
+                            <p className="font-medium">{item.product.name}</p>
+                            <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
+                          </div>
+                        </div>
+                        <p className="font-medium">Rs.{(item.product.price * item.quantity).toFixed(2)}</p>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+                <div className="flex justify-end items-center font-bold text-xl">
+                  <span className="mr-4 text-muted-foreground">Total:</span>
+                  <span>Rs.{selectedSale.total.toFixed(2)}</span>
+                </div>
+              </div>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="outline">Close</Button>
+                </DialogClose>
+                <Button onClick={handleSaveChanges}>
+                  <Save className="mr-2 h-4 w-4" />
+                  Save Changes
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
       </CardContent>
     </Card>
   );
