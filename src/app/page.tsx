@@ -6,7 +6,7 @@ import type { Product, CartItem } from "@/lib/types";
 import { initialProducts } from "@/data/products";
 import ProductGrid, { type ProductGridHandle } from "@/components/pos/ProductGrid";
 import Cart from "@/components/pos/Cart";
-import { ShopSwiftLogo } from "@/components/pos/ShopSwiftLogo";
+import { Logo } from "@/components/pos/ShopSwiftLogo";
 import { Button } from "@/components/ui/button";
 import { History, LogOut, LayoutDashboard, Package, Users, Activity, User } from "lucide-react";
 import Link from "next/link";
@@ -79,7 +79,7 @@ const POSPage: FC = () => {
   return (
     <div className="flex flex-col h-screen bg-background font-body">
       <header className="flex items-center justify-between px-6 py-3 border-b bg-card">
-        <ShopSwiftLogo />
+        <Logo />
         <div className="flex items-center gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

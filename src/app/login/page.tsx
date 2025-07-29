@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ShopSwiftLogo } from "@/components/pos/ShopSwiftLogo";
+import { Logo } from "@/components/pos/ShopSwiftLogo";
 import { useToast } from "@/hooks/use-toast";
 
 const LoginPage: FC = () => {
@@ -76,7 +76,7 @@ const LoginPage: FC = () => {
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4">
-            <ShopSwiftLogo />
+            <Logo />
           </div>
           <CardTitle className="font-headline">Welcome Back</CardTitle>
           <CardDescription>Enter your credentials to access your account.</CardDescription>

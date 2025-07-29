@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ShopSwiftLogo } from '@/components/pos/ShopSwiftLogo';
+import { Logo } from '@/components/pos/ShopSwiftLogo';
 import { LayoutDashboard, LogOut, History, Package, Users, Activity, User } from 'lucide-react';
 import {
   DropdownMenu,
@@ -36,7 +36,7 @@ export default function SalesHistoryLayout({
       <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b bg-card px-4 md:px-6">
         <nav className="hidden md:flex md:items-center md:gap-6 text-sm font-medium">
           <Link href={isAdmin ? "/admin/inventory" : "/"} className="mr-4">
-            <ShopSwiftLogo />
+            <Logo />
           </Link>
           <Link href="/" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
             <LayoutDashboard className="h-4 w-4" />
@@ -70,7 +70,7 @@ export default function SalesHistoryLayout({
           )}
         </nav>
         <div className="md:hidden">
-            <ShopSwiftLogo />
+            <Logo />
         </div>
         <div>
            <DropdownMenu>
