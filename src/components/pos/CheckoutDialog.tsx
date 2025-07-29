@@ -68,7 +68,7 @@ const CheckoutDialog: FC<CheckoutDialogProps> = ({
     onCheckout();
     toast({
       title: "Payment Successful",
-      description: `Total amount of ₹${total.toFixed(2)} has been paid.`,
+      description: `Total amount of Rs.${total.toFixed(2)} has been paid.`,
       action: <CheckCircle className="text-green-500" />,
     });
   };
@@ -85,7 +85,7 @@ const CheckoutDialog: FC<CheckoutDialogProps> = ({
         <div className="space-y-4 py-4">
           <div className="text-center">
             <p className="text-sm text-muted-foreground">Total Amount Due</p>
-            <p className="text-4xl font-bold font-headline text-primary">₹{total.toFixed(2)}</p>
+            <p className="text-4xl font-bold font-headline text-primary">Rs.{total.toFixed(2)}</p>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">

@@ -67,7 +67,7 @@ const SalesHistoryTable: FC = () => {
                   <Badge>{sale.paymentMethod}</Badge>
                 </TableCell>
                 <TableCell className="text-right font-medium">
-                  ₹{sale.total.toFixed(2)}
+                  Rs.{sale.total.toFixed(2)}
                 </TableCell>
                 <TableCell className="text-right">
                   <Dialog>
@@ -106,14 +106,14 @@ const SalesHistoryTable: FC = () => {
                                                 <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
                                             </div>
                                         </div>
-                                        <p className="font-medium">₹{(item.product.price * item.quantity).toFixed(2)}</p>
+                                        <p className="font-medium">Rs.{(item.product.price * item.quantity).toFixed(2)}</p>
                                     </div>
                                 ))}
                             </CardContent>
                         </Card>
                         <div className="flex justify-end items-center font-bold text-xl">
                             <span className="mr-4 text-muted-foreground">Total:</span>
-                            <span>₹{sale.total.toFixed(2)}</span>
+                            <span>Rs.{sale.total.toFixed(2)}</span>
                         </div>
                       </div>
                     </DialogContent>

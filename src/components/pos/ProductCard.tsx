@@ -43,7 +43,7 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAddToCart }) => {
       </CardHeader>
       <CardContent className="p-4 flex-1">
         <CardTitle className="text-base font-medium leading-tight mb-1">{product.name}</CardTitle>
-        <p className="text-lg font-bold text-primary">₹{product.price.toFixed(2)}</p>
+        <p className="text-lg font-bold text-primary">Rs.{product.price.toFixed(2)}</p>
       </CardContent>
       <CardFooter className="p-4 pt-0">
         <Button 

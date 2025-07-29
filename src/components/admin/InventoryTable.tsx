@@ -79,7 +79,7 @@ const InventoryTable: FC = () => {
                       className="h-8"
                     />
                   ) : (
-                    `₹${product.price.toFixed(2)}`
+                    `Rs.${product.price.toFixed(2)}`
                   )}
                 </TableCell>
                 <TableCell>
