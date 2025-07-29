@@ -31,6 +31,9 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import type { User } from "@/lib/types";
+import { getActivityLog } from "@/lib/activityLog";
+import { initialProducts } from "@/data/products";
+
 
 interface DownloadHistoryItem {
   id: number;
@@ -41,7 +44,6 @@ interface DownloadHistoryItem {
 export default function UserManagementPage() {
   const [date, setDate] = useState<DateRange | undefined>();
   const [downloadHistory, setDownloadHistory] = useState<DownloadHistoryItem[]>([]);
-  const [usersForDownload, setUsersForDownload] = useState<User[]>([]);
   const { toast } = useToast();
 
   const handleDownload = () => {
@@ -56,24 +58,40 @@ export default function UserManagementPage() {
 
     const rangeString = `${format(date.from, "LLL dd, y")} - ${format(date.to, "LLL dd, y")}`;
     
-    // In a real app, you would filter users by date range here.
-    // For now, we download all users.
-    
-    // 1. Convert user data to CSV format
-    const headers = ["ID", "Username", "Role"];
-    const csvContent = [
-      headers.join(","),
-      ...usersForDownload.map(user => `${user.id},${user.username},${user.role}`)
-    ].join("\n");
+    // 1. Fetch all data from localStorage
+    const salesData = JSON.parse(localStorage.getItem('sales') || '[]');
+    const activityLogData = getActivityLog();
+    const productsData = initialProducts; // This could be enhanced to fetch from a live state if needed
 
-    // 2. Create a Blob
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    // Filter data based on the selected date range
+    const filteredSales = salesData.filter((sale: any) => {
+        const saleDate = new Date(sale.date);
+        return saleDate >= date.from! && saleDate <= date.to!;
+    });
+
+    const filteredActivity = activityLogData.filter(log => {
+        const logDate = new Date(log.date);
+        return logDate >= date.from! && logDate <= date.to!;
+    });
     
-    // 3. Create a download link and trigger the download
+    // Combine all data into a single object
+    const systemData = {
+      sales: filteredSales,
+      activityLog: filteredActivity,
+      products: productsData, // Products don't have dates, so we include all
+    };
+
+    // 2. Convert to JSON string
+    const jsonContent = JSON.stringify(systemData, null, 2);
+
+    // 3. Create a Blob
+    const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8;' });
+    
+    // 4. Create a download link and trigger the download
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", `users-${format(new Date(), "yyyy-MM-dd")}.csv`);
+    link.setAttribute("download", `system-data-${format(new Date(), "yyyy-MM-dd")}.json`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -90,7 +108,7 @@ export default function UserManagementPage() {
 
     toast({
       title: "Download Started",
-      description: `User data for ${rangeString} is being prepared.`,
+      description: `System data for ${rangeString} is being prepared.`,
     });
   };
 
@@ -137,7 +155,7 @@ export default function UserManagementPage() {
           </Popover>
           <Button onClick={handleDownload}>
             <Download className="mr-2 h-4 w-4" />
-            Download
+            Download Data
           </Button>
           <Button>
             <PlusCircle className="mr-2 h-4 w-4" />
@@ -146,7 +164,7 @@ export default function UserManagementPage() {
         </div>
       </div>
       
-      <UserTable onUsersChange={setUsersForDownload} />
+      <UserTable onUsersChange={() => {}} />
 
       {downloadHistory.length > 0 && (
         <Card>
