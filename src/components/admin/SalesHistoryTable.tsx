@@ -39,6 +39,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { startOfWeek, startOfMonth, isWithinInterval } from 'date-fns';
 
 const SalesHistoryTable: FC = () => {
   const [sales, setSales] = useState<Sale[]>([]);
@@ -104,10 +105,22 @@ const SalesHistoryTable: FC = () => {
 
   const isUserAdmin = userRole === 'admin';
 
-  const { todaysTotal, cashTotal, upiTotal } = useMemo(() => {
-    const today = new Date().toDateString();
+  const { todaysTotal, weeklyTotal, monthlyTotal, cashTotal, upiTotal } = useMemo(() => {
+    const now = new Date();
+    const today = now.toDateString();
+    const startOfThisWeek = startOfWeek(now);
+    const startOfThisMonth = startOfMonth(now);
+
     const todaysSales = sales.filter(
       (sale) => new Date(sale.date).toDateString() === today
+    );
+    
+    const weeklySales = sales.filter(sale => 
+        isWithinInterval(new Date(sale.date), { start: startOfThisWeek, end: now })
+    );
+
+    const monthlySales = sales.filter(sale => 
+        isWithinInterval(new Date(sale.date), { start: startOfThisMonth, end: now })
     );
 
     let cash = 0;
@@ -129,8 +142,10 @@ const SalesHistoryTable: FC = () => {
     });
     
     const todaysTotal = todaysSales.reduce((acc, sale) => acc + sale.total, 0);
+    const weeklyTotal = weeklySales.reduce((acc, sale) => acc + sale.total, 0);
+    const monthlyTotal = monthlySales.reduce((acc, sale) => acc + sale.total, 0);
 
-    return { todaysTotal, cashTotal: cash, upiTotal: upi };
+    return { todaysTotal, weeklyTotal, monthlyTotal, cashTotal: cash, upiTotal: upi };
   }, [sales]);
 
 
@@ -252,16 +267,24 @@ const SalesHistoryTable: FC = () => {
           </Dialog>
         )}
       </CardContent>
-       <CardFooter className="flex justify-between items-start pt-6">
+       <CardFooter className="flex-col items-stretch gap-4 pt-6">
         <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm text-muted-foreground">
-          <div className="font-medium text-foreground">Cash Sales:</div>
+          <div className="font-medium text-foreground">Today's Cash Sales:</div>
           <div className="font-semibold text-foreground text-right">Rs.{cashTotal.toFixed(2)}</div>
-          <div className="font-medium text-foreground">UPI Sales:</div>
+          <div className="font-medium text-foreground">Today's UPI Sales:</div>
           <div className="font-semibold text-foreground text-right">Rs.{upiTotal.toFixed(2)}</div>
         </div>
-        <div className="text-right">
-            <p className="text-muted-foreground">Today's Grand Total</p>
-            <p className="text-2xl font-bold">Rs.{todaysTotal.toFixed(2)}</p>
+        <div className="flex justify-between items-start">
+            <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm text-muted-foreground">
+                <div className="font-medium text-foreground">This Week's Total:</div>
+                <div className="font-semibold text-foreground text-right">Rs.{weeklyTotal.toFixed(2)}</div>
+                <div className="font-medium text-foreground">This Month's Total:</div>
+                <div className="font-semibold text-foreground text-right">Rs.{monthlyTotal.toFixed(2)}</div>
+            </div>
+            <div className="text-right">
+                <p className="text-muted-foreground">Today's Grand Total</p>
+                <p className="text-2xl font-bold">Rs.{todaysTotal.toFixed(2)}</p>
+            </div>
         </div>
       </CardFooter>
     </Card>
