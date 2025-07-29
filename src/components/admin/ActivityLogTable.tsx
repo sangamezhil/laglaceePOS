@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, type FC } from "react";
+import { useState, type FC, useEffect } from "react";
 import type { ActivityLog } from "@/lib/types";
 import { initialActivityLog } from "@/data/activityLog";
 import {
@@ -22,7 +22,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 const ActivityLogTable: FC = () => {
-  const [logs] = useState<ActivityLog[]>(initialActivityLog);
+  const [logs, setLogs] = useState<ActivityLog[]>([]);
+
+  useEffect(() => {
+    // Set logs on the client-side to avoid hydration mismatch with dates
+    setLogs(initialActivityLog);
+  }, []);
+
 
   return (
     <Card>
