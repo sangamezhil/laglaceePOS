@@ -52,7 +52,10 @@ const SalesHistoryTable: FC = () => {
     setUserRole(role);
 
     const storedSales = localStorage.getItem('sales');
-    setSales(storedSales ? JSON.parse(storedSales) : initialSales);
+    const existingSales = storedSales ? JSON.parse(storedSales) : initialSales;
+    
+    setSales(existingSales);
+
   }, []);
 
 
