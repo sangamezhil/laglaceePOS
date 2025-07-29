@@ -19,10 +19,10 @@ interface CartProps {
 const Cart: FC<CartProps> = ({ cart, onUpdateQuantity, onRemoveFromCart, onClearCart }) => {
   const [isCheckoutOpen, setCheckoutOpen] = useState(false);
 
-  const subtotal = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
-  const taxRate = 0.08; // 8% tax
-  const tax = subtotal * taxRate;
-  const total = subtotal + tax;
+  const total = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+  const gstRate = 0.18; // 18% GST
+  const subtotal = total / (1 + gstRate);
+  const tax = total - subtotal;
 
   const handleCheckout = () => {
     onClearCart();
@@ -79,7 +79,7 @@ const Cart: FC<CartProps> = ({ cart, onUpdateQuantity, onRemoveFromCart, onClear
               <span>Rs.{subtotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
-              <span>Tax ({(taxRate * 100).toFixed(0)}%)</span>
+              <span>GST (18%)</span>
               <span>Rs.{tax.toFixed(2)}</span>
             </div>
             <Separator />
