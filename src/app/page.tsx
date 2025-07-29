@@ -8,7 +8,7 @@ import ProductGrid, { type ProductGridHandle } from "@/components/pos/ProductGri
 import Cart from "@/components/pos/Cart";
 import { ShopSwiftLogo } from "@/components/pos/ShopSwiftLogo";
 import { Button } from "@/components/ui/button";
-import { History, LogOut, LayoutDashboard, Package, Users, Activity } from "lucide-react";
+import { History, LogOut, LayoutDashboard, Package, Users, Activity, User } from "lucide-react";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -99,6 +99,13 @@ const POSPage: FC = () => {
                     </p>
                   </div>
                 </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                 <DropdownMenuItem asChild>
+                    <Link href={isAdmin ? "/admin/inventory" : "/"}>
+                        <User className="mr-2 h-4 w-4" />
+                        <span>Profile</span>
+                    </Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                  {isAdmin && (
                   <>

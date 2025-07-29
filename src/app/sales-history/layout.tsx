@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ShopSwiftLogo } from '@/components/pos/ShopSwiftLogo';
-import { LayoutDashboard, LogOut, History, Package, Users, Activity } from 'lucide-react';
+import { LayoutDashboard, LogOut, History, Package, Users, Activity, User } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,7 +48,7 @@ export default function SalesHistoryLayout({
                 <Package className="h-4 w-4" />
                 Inventory
               </Link>
-               <Link href="/admin/sales-history" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
+               <Link href="/admin/sales-history" className="flex items-center gap-2 font-medium text-foreground">
                 <History className="h-4 w-4" />
                 Sales History
               </Link>
@@ -63,7 +63,7 @@ export default function SalesHistoryLayout({
             </>
           )}
           {!isAdmin && (
-             <Link href="/sales-history" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
+             <Link href="/sales-history" className="flex items-center gap-2 font-medium text-foreground">
                 <History className="h-4 w-4" />
                 Sales History
             </Link>
@@ -91,6 +91,13 @@ export default function SalesHistoryLayout({
                     </p>
                   </div>
                 </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                    <Link href={isAdmin ? "/admin/inventory" : "/"}>
+                        <User className="mr-2 h-4 w-4" />
+                        <span>Profile</span>
+                    </Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                  <DropdownMenuItem asChild>
                   <Link href="/">

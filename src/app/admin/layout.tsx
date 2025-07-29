@@ -33,7 +33,7 @@ export default function AdminLayout({
             <Package className="h-4 w-4" />
             Inventory
           </Link>
-          <Link href="/sales-history" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
+          <Link href="/admin/sales-history" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
             <History className="h-4 w-4" />
             Sales History
           </Link>
@@ -70,6 +70,13 @@ export default function AdminLayout({
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
+                  <Link href="/admin/inventory">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
                   <Link href="/">
                     <LayoutDashboard className="mr-2 h-4 w-4" />
                     <span>POS View</span>
@@ -82,7 +89,7 @@ export default function AdminLayout({
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/sales-history">
+                  <Link href="/admin/sales-history">
                     <History className="mr-2 h-4 w-4" />
                     <span>Sales History</span>
                   </Link>
