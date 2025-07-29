@@ -20,9 +20,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Trash2, Edit, Save } from "lucide-react";
-import Image from "next/image";
 
 const InventoryTable: FC = () => {
   const [products, setProducts] = useState<Product[]>(initialProducts);
@@ -61,7 +59,6 @@ const InventoryTable: FC = () => {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>SKU</TableHead>
               <TableHead>Category</TableHead>
               <TableHead className="w-[120px]">Price</TableHead>
               <TableHead className="w-[120px]">Stock</TableHead>
@@ -72,9 +69,6 @@ const InventoryTable: FC = () => {
             {products.map((product) => (
               <TableRow key={product.id}>
                 <TableCell className="font-medium">{product.name}</TableCell>
-                <TableCell>
-                  <Badge variant="outline">{product.sku}</Badge>
-                </TableCell>
                 <TableCell>{product.category}</TableCell>
                 <TableCell>
                   {editingId === product.id ? (
