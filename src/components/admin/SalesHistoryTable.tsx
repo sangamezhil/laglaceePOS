@@ -60,14 +60,14 @@ const SalesHistoryTable: FC = () => {
             { product: initialProducts[1], quantity: 1 },
         ],
         total: 1.99 + 4.50,
-        paymentMethod: "Cash",
+        paymentMethod: "Split",
     };
     
     setSales(prevSales => {
         if (prevSales.find(s => s.id === 'sale-today')) {
             return prevSales;
         }
-        return [...prevSales, todaySale];
+        return [todaySale, ...prevSales];
     });
 
   }, []);
@@ -108,17 +108,12 @@ const SalesHistoryTable: FC = () => {
 
     const todaysTotal = todaysSales.reduce((acc, sale) => acc + sale.total, 0);
     const cashTotal = todaysSales
-      .filter((sale) => sale.paymentMethod === "Cash" || sale.paymentMethod === "Split")
       .reduce((acc, sale) => {
           if (sale.paymentMethod === 'Cash') return acc + sale.total;
-          // A simple split calculation logic can be added here if needed
-          // For now, let's assume half is cash for split payments as an example.
-          // In a real app, you would store the split amounts.
           if (sale.paymentMethod === 'Split') return acc + sale.total / 2;
           return acc;
       }, 0);
     const upiTotal = todaysSales
-      .filter((sale) => sale.paymentMethod === "UPI" || sale.paymentMethod === 'Split')
       .reduce((acc, sale) => {
            if (sale.paymentMethod === 'UPI') return acc + sale.total;
            if (sale.paymentMethod === 'Split') return acc + sale.total / 2;
