@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, type FC } from "react";
@@ -77,7 +78,7 @@ const POSPage: FC = () => {
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">Cashier</p>
                     <p className="text-xs leading-none text-muted-foreground">
-                      cashier@shopswift.com
+                      cashier
                     </p>
                   </div>
                 </DropdownMenuLabel>

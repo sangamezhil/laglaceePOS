@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ShopSwiftLogo } from '@/components/pos/ShopSwiftLogo';
@@ -55,7 +56,7 @@ export default function AdminLayout({
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">Admin</p>
                     <p className="text-xs leading-none text-muted-foreground">
-                      admin@shopswift.com
+                      admin
                     </p>
                   </div>
                 </DropdownMenuLabel>

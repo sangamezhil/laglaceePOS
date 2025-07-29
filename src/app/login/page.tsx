@@ -20,33 +20,33 @@ import { useToast } from "@/hooks/use-toast";
 const LoginPage: FC = () => {
   const router = useRouter();
   const { toast } = useToast();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !password) {
+    if (!username || !password) {
       toast({
         variant: "destructive",
         title: "Login Failed",
-        description: "Please enter both email and password.",
+        description: "Please enter both username and password.",
       });
       return;
     }
 
-    const adminCredentials = { email: "admin@shopswift.com", password: "adminpassword" };
-    const cashierCredentials = { email: "cashier@shopswift.com", password: "cashierpassword" };
+    const adminCredentials = { username: "admin", password: "adminpassword" };
+    const cashierCredentials = { username: "cashier", password: "cashierpassword" };
 
     let loginSuccess = false;
     let redirectPath = "";
     let role = "";
 
-    if (email === adminCredentials.email && password === adminCredentials.password) {
+    if (username === adminCredentials.username && password === adminCredentials.password) {
       loginSuccess = true;
       redirectPath = "/admin/inventory";
       role = "admin";
-    } else if (email === cashierCredentials.email && password === cashierCredentials.password) {
+    } else if (username === cashierCredentials.username && password === cashierCredentials.password) {
       loginSuccess = true;
       redirectPath = "/";
       role = "cashier";
@@ -62,7 +62,7 @@ const LoginPage: FC = () => {
       toast({
         variant: "destructive",
         title: "Login Failed",
-        description: "Invalid email or password.",
+        description: "Invalid username or password.",
       });
     }
   };
@@ -80,8 +80,8 @@ const LoginPage: FC = () => {
         <form onSubmit={handleLogin}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="user@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <Label htmlFor="username">Username</Label>
+              <Input id="username" type="text" placeholder="Enter your username" value={username} onChange={(e) => setUsername(e.target.value)} required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
