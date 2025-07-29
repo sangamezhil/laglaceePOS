@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { FileUp, PlusCircle, Download } from "lucide-react";
+import { FileUp, PlusCircle } from "lucide-react";
 import InventoryTable from "@/components/admin/InventoryTable";
 import {
   Dialog,
@@ -75,13 +75,6 @@ export default function InventoryPage() {
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
-                 <div className="text-sm">
-                  Don&apos;t have a template?{' '}
-                  <a href="/sample-import.xlsx" download className="underline font-medium text-primary hover:text-primary/80">
-                    <Download className="inline-block mr-1 h-4 w-4" />
-                    Download Sample File
-                  </a>
-                </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="import-file" className="text-right">
                     Excel File
