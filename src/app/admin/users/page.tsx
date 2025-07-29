@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import * as XLSX from "xlsx";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Download, Calendar as CalendarIcon, History } from "lucide-react";
 import UserTable from "@/components/admin/UserTable";
@@ -30,7 +31,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import type { User } from "@/lib/types";
+import type { User, Sale } from "@/lib/types";
 import { getActivityLog } from "@/lib/activityLog";
 import { initialProducts } from "@/data/products";
 
@@ -59,43 +60,48 @@ export default function UserManagementPage() {
     const rangeString = `${format(date.from, "LLL dd, y")} - ${format(date.to, "LLL dd, y")}`;
     
     // 1. Fetch all data from localStorage
-    const salesData = JSON.parse(localStorage.getItem('sales') || '[]');
+    const salesData: Sale[] = JSON.parse(localStorage.getItem('sales') || '[]');
     const activityLogData = getActivityLog();
     const productsData = initialProducts; // This could be enhanced to fetch from a live state if needed
 
     // Filter data based on the selected date range
     const filteredSales = salesData.filter((sale: any) => {
         const saleDate = new Date(sale.date);
-        return saleDate >= date.from! && saleDate <= date.to!;
+        return saleDate >= date!.from! && saleDate <= date!.to!;
     });
 
     const filteredActivity = activityLogData.filter(log => {
         const logDate = new Date(log.date);
-        return logDate >= date.from! && logDate <= date.to!;
+        return logDate >= date!.from! && logDate <= date!.to!;
     });
     
-    // Combine all data into a single object
-    const systemData = {
-      sales: filteredSales,
-      activityLog: filteredActivity,
-      products: productsData, // Products don't have dates, so we include all
-    };
+    // 2. Create a new workbook
+    const wb = XLSX.utils.book_new();
 
-    // 2. Convert to JSON string
-    const jsonContent = JSON.stringify(systemData, null, 2);
+    // 3. Create worksheets for each data type
+    const salesForSheet = filteredSales.map(sale => ({
+      ID: sale.id,
+      Date: new Date(sale.date).toLocaleString(),
+      'Total Items': sale.items.reduce((acc, item) => acc + item.quantity, 0),
+      'Payment Method': sale.paymentMethod,
+      'Total Amount': sale.total,
+      'Items Sold': sale.items.map(i => `${i.product.name} (Qty: ${i.quantity})`).join(', '),
+    }));
+    const salesWs = XLSX.utils.json_to_sheet(salesForSheet);
+    XLSX.utils.book_append_sheet(wb, salesWs, "Sales Transactions");
 
-    // 3. Create a Blob
-    const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8;' });
+    const activityWs = XLSX.utils.json_to_sheet(filteredActivity.map(log => ({
+        ...log,
+        date: new Date(log.date).toLocaleString(),
+    })));
+    XLSX.utils.book_append_sheet(wb, activityWs, "Activity Log");
+
+    const productsWs = XLSX.utils.json_to_sheet(productsData);
+    XLSX.utils.book_append_sheet(wb, productsWs, "Product Inventory");
     
-    // 4. Create a download link and trigger the download
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `system-data-${format(new Date(), "yyyy-MM-dd")}.json`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    // 4. Generate the Excel file and trigger download
+    XLSX.writeFile(wb, `system-data-${format(new Date(), "yyyy-MM-dd")}.xlsx`);
+
 
     // Update download history
     const newHistoryItem: DownloadHistoryItem = {
