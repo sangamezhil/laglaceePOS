@@ -83,7 +83,7 @@ const Cart: FC<CartProps> = ({ cart, onUpdateQuantity, onRemoveFromCart, onClear
               <span>Rs.{tax.toFixed(2)}</span>
             </div>
             <Separator />
-            <div className="flex justify-between font-bold text-lg">
+            <div className="flex justify-between font-bold text-2xl text-primary py-2">
               <span>Total</span>
               <span>Rs.{total.toFixed(2)}</span>
             </div>
