@@ -59,6 +59,7 @@ const InventoryTable: FC = () => {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
+              <TableHead>Barcode</TableHead>
               <TableHead>Category</TableHead>
               <TableHead className="w-[120px]">Price</TableHead>
               <TableHead className="w-[120px]">Stock</TableHead>
@@ -69,6 +70,18 @@ const InventoryTable: FC = () => {
             {products.map((product) => (
               <TableRow key={product.id}>
                 <TableCell className="font-medium">{product.name}</TableCell>
+                <TableCell>
+                  {editingId === product.id ? (
+                    <Input
+                      type="text"
+                      value={editedProduct.sku ?? product.sku}
+                      onChange={(e) => handleInputChange('sku', e.target.value)}
+                      className="h-8"
+                    />
+                  ) : (
+                    product.sku
+                  )}
+                </TableCell>
                 <TableCell>{product.category}</TableCell>
                 <TableCell>
                   {editingId === product.id ? (
