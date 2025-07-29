@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Trash2, Plus, Minus, ShoppingCart } from "lucide-react";
-import Image from "next/image";
 import CheckoutDialog from "./CheckoutDialog";
 
 interface CartProps {
@@ -48,14 +47,6 @@ const Cart: FC<CartProps> = ({ cart, onUpdateQuantity, onRemoveFromCart, onClear
             <div className="p-4 space-y-4">
               {cart.map((item) => (
                 <div key={item.product.id} className="flex items-start gap-4">
-                  <Image
-                    src={item.product.imageUrl}
-                    alt={item.product.name}
-                    width={64}
-                    height={64}
-                    className="rounded-md aspect-square object-cover"
-                    data-ai-hint="product image"
-                  />
                   <div className="flex-1">
                     <p className="font-medium text-sm">{item.product.name}</p>
                     <p className="text-sm text-muted-foreground">Rs.{item.product.price.toFixed(2)}</p>

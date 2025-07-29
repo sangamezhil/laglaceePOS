@@ -1,5 +1,4 @@
 import type { FC } from "react";
-import Image from "next/image";
 import type { Product } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,21 +27,13 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAddToCart }) => {
 
   return (
     <Card className={cn("flex flex-col transition-all hover:shadow-lg", isOutOfStock && "opacity-60")}>
-      <CardHeader className="p-0 relative">
-        <Image
-          src={product.imageUrl}
-          alt={product.name}
-          width={300}
-          height={300}
-          className="aspect-square object-cover w-full rounded-t-lg"
-          data-ai-hint="product image"
-        />
-        <div className="absolute top-2 right-2">
+      <CardHeader className="p-4 relative">
+         <div className="absolute top-2 right-2">
            <StockIndicator stock={product.stock} />
         </div>
+        <CardTitle className="text-base font-medium leading-tight mb-1 h-10">{product.name}</CardTitle>
       </CardHeader>
       <CardContent className="p-4 flex-1">
-        <CardTitle className="text-base font-medium leading-tight mb-1">{product.name}</CardTitle>
         <p className="text-lg font-bold text-primary">Rs.{product.price.toFixed(2)}</p>
       </CardContent>
       <CardFooter className="p-4 pt-0">

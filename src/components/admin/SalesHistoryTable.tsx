@@ -28,7 +28,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import Image from "next/image";
 
 const SalesHistoryTable: FC = () => {
   const [sales] = useState<Sale[]>(initialSales);
@@ -100,7 +99,6 @@ const SalesHistoryTable: FC = () => {
                                 {sale.items.map(item => (
                                     <div key={item.product.id} className="flex items-center justify-between">
                                         <div className="flex items-center gap-4">
-                                            <Image src={item.product.imageUrl} alt={item.product.name} width={40} height={40} className="rounded-md object-cover" />
                                             <div>
                                                 <p className="font-medium">{item.product.name}</p>
                                                 <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
