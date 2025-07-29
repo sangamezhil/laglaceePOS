@@ -34,8 +34,8 @@ const CheckoutDialog: FC<CheckoutDialogProps> = ({
 
   useEffect(() => {
     if (isOpen) {
-      setCashAmount("");
-      setUpiAmount(total.toFixed(2));
+      setCashAmount(total.toFixed(2));
+      setUpiAmount("");
     }
   }, [isOpen, total]);
 
