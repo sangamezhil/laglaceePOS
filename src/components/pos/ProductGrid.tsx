@@ -32,12 +32,19 @@ const ProductGrid: FC<ProductGridProps> = forwardRef<ProductGridHandle, ProductG
 
   const filteredProducts = useMemo(() => {
     if (!searchTerm) return products;
+    const lowercasedSearchTerm = searchTerm.toLowerCase();
+    const product = products.find(p => p.barcode.toLowerCase() === lowercasedSearchTerm);
+    if(product) {
+        onAddToCart(product)
+        setSearchTerm("");
+        return products;
+    }
     return products.filter(
       (p) =>
-        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.barcode.toLowerCase().includes(searchTerm.toLowerCase())
+        p.name.toLowerCase().includes(lowercasedSearchTerm) ||
+        p.barcode.toLowerCase().includes(lowercasedSearchTerm)
     );
-  }, [products, searchTerm]);
+  }, [products, searchTerm, onAddToCart]);
 
   return (
     <div className="flex flex-col gap-6">
