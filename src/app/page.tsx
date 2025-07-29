@@ -101,7 +101,7 @@ const POSPage: FC = () => {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                  <DropdownMenuItem asChild>
-                    <Link href={isAdmin ? "/admin/inventory" : "/"}>
+                    <Link href={isAdmin ? "/admin/profile" : "/"}>
                         <User className="mr-2 h-4 w-4" />
                         <span>Profile</span>
                     </Link>
