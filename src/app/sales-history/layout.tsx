@@ -1,4 +1,7 @@
 
+"use client";
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ShopSwiftLogo } from '@/components/pos/ShopSwiftLogo';
@@ -18,11 +21,14 @@ export default function SalesHistoryLayout({
 }: {
   children: React.ReactNode
 }) {
-  // A simple way to determine the user's role. In a real app, this would come from an auth context.
-  // For this prototype, we'll check if we are on an admin path.
-  const isAdmin = typeof window !== 'undefined' && window.location.pathname.startsWith('/admin');
+  const [userRole, setUserRole] = useState('cashier');
   
-  const userRole = isAdmin ? 'admin' : 'cashier';
+  useEffect(() => {
+    const role = localStorage.getItem('userRole') || 'cashier';
+    setUserRole(role);
+  }, []);
+
+  const isAdmin = userRole === 'admin';
   const userInitial = isAdmin ? 'A' : 'C';
 
   return (

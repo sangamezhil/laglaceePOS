@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, type FC, useMemo } from "react";
+import { useState, type FC, useEffect } from "react";
 import type { Sale } from "@/lib/types";
 import { initialSales } from "@/data/sales";
 import {
@@ -44,16 +44,11 @@ const SalesHistoryTable: FC = () => {
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const { toast } = useToast();
+  const [userRole, setUserRole] = useState('cashier');
 
-  // A simple way to determine the user's role. In a real app, this would come from an auth context.
-  const userRole = useMemo(() => {
-    // This is a mock. In a real app, you would get the user role from your authentication system.
-    // For now, we assume 'admin' if they can access the full admin layout.
-    // A better check might involve checking the current URL path.
-    if (typeof window !== 'undefined') {
-        return window.location.pathname.startsWith('/admin') ? 'admin' : 'cashier';
-    }
-    return 'cashier';
+  useEffect(() => {
+    const role = localStorage.getItem('userRole') || 'cashier';
+    setUserRole(role);
   }, []);
 
   const openSaleDetails = (sale: Sale) => {
