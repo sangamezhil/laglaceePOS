@@ -26,6 +26,7 @@ const LoginPage: FC = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (!email || !password) {
       toast({
         variant: "destructive",
@@ -34,17 +35,37 @@ const LoginPage: FC = () => {
       });
       return;
     }
-    
-    // Simulate login
-    toast({
-      title: "Login Successful",
-      description: `Logged in as ${role}. Redirecting...`,
-    });
+
+    const adminCredentials = { email: "admin@shopswift.com", password: "adminpassword" };
+    const cashierCredentials = { email: "cashier@shopswift.com", password: "cashierpassword" };
+
+    let loginSuccess = false;
+    let redirectPath = "";
 
     if (role === "admin") {
-      router.push("/admin/inventory");
+      if (email === adminCredentials.email && password === adminCredentials.password) {
+        loginSuccess = true;
+        redirectPath = "/admin/inventory";
+      }
+    } else if (role === "cashier") {
+      if (email === cashierCredentials.email && password === cashierCredentials.password) {
+        loginSuccess = true;
+        redirectPath = "/";
+      }
+    }
+
+    if (loginSuccess) {
+      toast({
+        title: "Login Successful",
+        description: `Logged in as ${role}. Redirecting...`,
+      });
+      router.push(redirectPath);
     } else {
-      router.push("/");
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: "Invalid email, password, or role.",
+      });
     }
   };
 
@@ -62,7 +83,7 @@ const LoginPage: FC = () => {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="admin@shopswift.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <Input id="email" type="email" placeholder="user@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
