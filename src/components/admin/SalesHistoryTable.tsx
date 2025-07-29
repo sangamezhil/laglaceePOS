@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, type FC } from "react";
@@ -28,9 +29,25 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 const SalesHistoryTable: FC = () => {
-  const [sales] = useState<Sale[]>(initialSales);
+  const [sales, setSales] = useState<Sale[]>(initialSales);
+
+  const handlePaymentMethodChange = (saleId: string, newMethod: Sale['paymentMethod']) => {
+    setSales(prevSales => 
+      prevSales.map(sale => 
+        sale.id === saleId ? { ...sale, paymentMethod: newMethod } : sale
+      )
+    );
+  };
+
 
   return (
     <Card>
@@ -90,7 +107,19 @@ const SalesHistoryTable: FC = () => {
                             </div>
                              <div>
                                 <p className="text-muted-foreground">Payment Method</p>
-                                <p>{sale.paymentMethod}</p>
+                                <Select 
+                                  value={sale.paymentMethod}
+                                  onValueChange={(value: Sale['paymentMethod']) => handlePaymentMethodChange(sale.id, value)}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select payment method" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="Cash">Cash</SelectItem>
+                                    <SelectItem value="UPI">UPI</SelectItem>
+                                    <SelectItem value="Split">Split</SelectItem>
+                                  </SelectContent>
+                                </Select>
                             </div>
                         </div>
 
