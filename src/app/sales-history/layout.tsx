@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ShopSwiftLogo } from '@/components/pos/ShopSwiftLogo';
-import { LayoutDashboard, LogOut, Package, User, History, Users } from 'lucide-react';
+import { LayoutDashboard, LogOut, History } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export default function AdminLayout({
+export default function SalesHistoryLayout({
   children,
 }: {
   children: React.ReactNode
@@ -22,24 +22,16 @@ export default function AdminLayout({
     <div className="min-h-screen bg-background font-body">
       <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b bg-card px-4 md:px-6">
         <nav className="hidden md:flex md:items-center md:gap-6 text-sm font-medium">
-          <Link href="/admin/inventory" className="mr-4">
+          <Link href="/" className="mr-4">
             <ShopSwiftLogo />
           </Link>
           <Link href="/" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
             <LayoutDashboard className="h-4 w-4" />
             POS View
           </Link>
-          <Link href="/admin/inventory" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
-            <Package className="h-4 w-4" />
-            Inventory
-          </Link>
           <Link href="/sales-history" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
             <History className="h-4 w-4" />
             Sales History
-          </Link>
-          <Link href="/admin/users" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
-            <Users className="h-4 w-4" />
-            User Management
           </Link>
         </nav>
         <div className="md:hidden">
@@ -50,17 +42,17 @@ export default function AdminLayout({
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src="https://placehold.co/100x100" alt="Admin" />
-                    <AvatarFallback>A</AvatarFallback>
+                    <AvatarImage src="https://placehold.co/100x100" alt="User" />
+                    <AvatarFallback>U</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">Admin</p>
+                    <p className="text-sm font-medium leading-none">Cashier</p>
                     <p className="text-xs leading-none text-muted-foreground">
-                      admin
+                      cashier
                     </p>
                   </div>
                 </DropdownMenuLabel>
@@ -71,22 +63,10 @@ export default function AdminLayout({
                     <span>POS View</span>
                   </Link>
                 </DropdownMenuItem>
-                 <DropdownMenuItem asChild>
-                  <Link href="/admin/inventory">
-                    <Package className="mr-2 h-4 w-4" />
-                    <span>Inventory</span>
-                  </Link>
-                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/sales-history">
                     <History className="mr-2 h-4 w-4" />
                     <span>Sales History</span>
-                  </Link>
-                </DropdownMenuItem>
-                 <DropdownMenuItem asChild>
-                  <Link href="/admin/users">
-                    <Users className="mr-2 h-4 w-4" />
-                    <span>User Management</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
