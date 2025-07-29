@@ -52,7 +52,24 @@ const SalesHistoryTable: FC = () => {
     setUserRole(role);
 
     const storedSales = localStorage.getItem('sales');
-    const existingSales = storedSales ? JSON.parse(storedSales) : initialSales;
+    let existingSales = storedSales ? JSON.parse(storedSales) : initialSales;
+    
+    // Check if a sale for 'today' already exists to avoid duplicates on re-renders
+    const hasTodaySale = existingSales.some((sale: Sale) => {
+        if(sale.id === 'sale-today') return true;
+        const saleDate = new Date(sale.date).toDateString();
+        const today = new Date().toDateString();
+        return saleDate === today && sale.id.startsWith('sale-'); // Simple check
+    });
+
+    if (!hasTodaySale) {
+        const todaySale = initialSales.find(s => s.id === 'sale-today');
+        if (todaySale) {
+            const newSale = { ...todaySale, id: `sale-${Date.now()}`, date: new Date().toISOString() };
+            existingSales = [newSale, ...existingSales];
+            localStorage.setItem('sales', JSON.stringify(existingSales));
+        }
+    }
     
     setSales(existingSales);
 
@@ -180,22 +197,25 @@ const SalesHistoryTable: FC = () => {
                     <p className="text-muted-foreground">Date</p>
                     <p>{new Date(selectedSale.date).toLocaleString()}</p>
                   </div>
-                  <div>
+                   <div>
                     <p className="text-muted-foreground">Payment Method</p>
-                    <Select
-                      value={selectedSale.paymentMethod}
-                      onValueChange={(value: Sale['paymentMethod']) => handlePaymentMethodChange(value)}
-                      disabled={!isUserAdmin}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select payment method" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Cash">Cash</SelectItem>
-                        <SelectItem value="UPI">UPI</SelectItem>
-                        <SelectItem value="Split">Split</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    {isUserAdmin ? (
+                      <Select
+                        value={selectedSale.paymentMethod}
+                        onValueChange={(value: Sale['paymentMethod']) => handlePaymentMethodChange(value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select payment method" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Cash">Cash</SelectItem>
+                          <SelectItem value="UPI">UPI</SelectItem>
+                          <SelectItem value="Split">Split</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                       <p className="font-medium">{selectedSale.paymentMethod}</p>
+                    )}
                   </div>
                 </div>
 

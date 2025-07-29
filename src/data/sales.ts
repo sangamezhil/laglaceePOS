@@ -50,5 +50,12 @@ export const initialSales: Sale[] = [
     ],
     total: 2.10 + (2.99*2) + (2.25*4),
     paymentMethod: "Split",
+  },
+  {
+    id: "sale-today",
+    date: new Date().toISOString(),
+    items: [{ product: initialProducts[0], quantity: 2 }, { product: initialProducts[1], quantity: 1}],
+    total: (1.99 * 2) + 4.50,
+    paymentMethod: "Split",
   }
 ];
