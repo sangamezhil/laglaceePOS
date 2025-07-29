@@ -51,7 +51,9 @@ const SalesHistoryTable: FC = () => {
   useEffect(() => {
     const role = localStorage.getItem('userRole') || 'cashier';
     setUserRole(role);
+  }, []);
 
+  useEffect(() => {
     setSales(prevSales => {
         const today = new Date();
         const hasTodaySale = prevSales.some(s => {
