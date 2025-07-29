@@ -45,7 +45,9 @@ const InventoryTable: FC = () => {
   };
   
   const handleInputChange = (field: keyof Product, value: string) => {
-    setEditedProduct(prev => ({ ...prev, [field]: value }));
+    const numericFields = ['price', 'stock'];
+    const parsedValue = numericFields.includes(field) ? parseFloat(value) : value;
+    setEditedProduct(prev => ({ ...prev, [field]: parsedValue }));
   };
 
   return (
@@ -58,7 +60,6 @@ const InventoryTable: FC = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[80px]">Image</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>SKU</TableHead>
               <TableHead>Category</TableHead>
@@ -70,16 +71,6 @@ const InventoryTable: FC = () => {
           <TableBody>
             {products.map((product) => (
               <TableRow key={product.id}>
-                <TableCell>
-                  <Image 
-                    src={product.imageUrl} 
-                    alt={product.name} 
-                    width={40} 
-                    height={40} 
-                    className="rounded-md object-cover aspect-square"
-                    data-ai-hint="product image"
-                  />
-                </TableCell>
                 <TableCell className="font-medium">{product.name}</TableCell>
                 <TableCell>
                   <Badge variant="outline">{product.sku}</Badge>
