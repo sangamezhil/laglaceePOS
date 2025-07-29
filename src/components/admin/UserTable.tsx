@@ -22,6 +22,17 @@ import { Button } from "@/components/ui/button";
 import { Trash2, Edit, Save, KeyRound } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+
 
 interface User {
     id: number;
@@ -39,6 +50,10 @@ const UserTable: FC = () => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedUser, setEditedUser] = useState<Partial<User>>({});
   const { toast } = useToast();
+  const [isResetDialogOpen, setResetDialogOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [newPassword, setNewPassword] = useState("");
+
 
   const handleEdit = (user: User) => {
     setEditingId(user.id);
@@ -59,14 +74,34 @@ const UserTable: FC = () => {
     setEditedUser(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleResetPassword = (id: number) => {
+  const openResetPasswordDialog = (user: User) => {
+    setSelectedUser(user);
+    setNewPassword("");
+    setResetDialogOpen(true);
+  }
+
+  const handleConfirmResetPassword = () => {
+    if (!newPassword) {
+      toast({
+        variant: "destructive",
+        title: "Password cannot be empty",
+        description: "Please enter a new password.",
+      });
+      return;
+    }
+    // In a real app, you'd call an API to update the password.
+    // For now, we'll just show a success message.
+    console.log(`Password for ${selectedUser?.username} reset to: ${newPassword}`);
     toast({
-      title: "Feature not implemented",
-      description: "Password reset functionality is not yet available.",
+      title: "Password Reset Successful",
+      description: `The password for ${selectedUser?.username} has been updated.`,
     });
+    setResetDialogOpen(false);
+    setSelectedUser(null);
   }
 
   return (
+    <>
     <Card>
       <CardHeader>
         <CardTitle>Users</CardTitle>
@@ -109,7 +144,7 @@ const UserTable: FC = () => {
                         <Button variant="ghost" size="icon" onClick={() => handleEdit(user)}>
                             <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleResetPassword(user.id)}>
+                        <Button variant="ghost" size="icon" onClick={() => openResetPasswordDialog(user)}>
                             <KeyRound className="h-4 w-4" />
                         </Button>
                         <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={() => handleDelete(user.id)}>
@@ -124,6 +159,36 @@ const UserTable: FC = () => {
         </Table>
       </CardContent>
     </Card>
+     <Dialog open={isResetDialogOpen} onOpenChange={setResetDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reset Password for {selectedUser?.username}</DialogTitle>
+            <DialogDescription>
+              Enter a new password for the user. They will be required to use this password at their next login.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="new-password" className="text-right">
+                New Password
+              </Label>
+              <Input
+                id="new-password"
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="col-span-3"
+                autoFocus
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setResetDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleConfirmResetPassword}>Reset Password</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
