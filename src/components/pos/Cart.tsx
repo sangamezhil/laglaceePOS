@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, type FC } from "react";
-import type { CartItem } from "@/lib/types";
+import type { CartItem, Sale } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -15,7 +15,7 @@ interface CartProps {
   onUpdateQuantity: (productId: number, quantity: number) => void;
   onRemoveFromCart: (productId: number) => void;
   onClearCart: () => void;
-  onSuccessfulCheckout: () => void;
+  onSuccessfulCheckout: (paymentMethod: Sale['paymentMethod'], total: number) => void;
 }
 
 const Cart: FC<CartProps> = ({ cart, onUpdateQuantity, onRemoveFromCart, onClearCart, onSuccessfulCheckout }) => {
@@ -26,8 +26,8 @@ const Cart: FC<CartProps> = ({ cart, onUpdateQuantity, onRemoveFromCart, onClear
   const subtotal = total / (1 + gstRate);
   const tax = total - subtotal;
 
-  const handleCheckout = () => {
-    onSuccessfulCheckout();
+  const handleCheckout = (paymentMethod: Sale['paymentMethod']) => {
+    onSuccessfulCheckout(paymentMethod, total);
     setCheckoutOpen(false);
   }
 

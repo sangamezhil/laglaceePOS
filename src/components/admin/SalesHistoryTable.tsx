@@ -4,7 +4,6 @@
 import { useState, type FC, useEffect, useMemo } from "react";
 import type { Sale } from "@/lib/types";
 import { initialSales } from "@/data/sales";
-import { initialProducts } from "@/data/products";
 import {
   Table,
   TableBody,
@@ -42,7 +41,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 const SalesHistoryTable: FC = () => {
-  const [sales, setSales] = useState<Sale[]>(initialSales);
+  const [sales, setSales] = useState<Sale[]>([]);
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const { toast } = useToast();
@@ -51,34 +50,9 @@ const SalesHistoryTable: FC = () => {
   useEffect(() => {
     const role = localStorage.getItem('userRole') || 'cashier';
     setUserRole(role);
-  }, []);
 
-  useEffect(() => {
-    setSales(prevSales => {
-        const today = new Date();
-        const hasTodaySale = prevSales.some(s => {
-            const saleDate = new Date(s.date);
-            return saleDate.getDate() === today.getDate() &&
-                   saleDate.getMonth() === today.getMonth() &&
-                   saleDate.getFullYear() === today.getFullYear();
-        });
-
-        if (!hasTodaySale) {
-            const todaySale: Sale = {
-                id: `sale-${Date.now()}`, // Unique ID for today's sale
-                date: today.toISOString(),
-                items: [
-                    { product: initialProducts[0], quantity: 1 },
-                    { product: initialProducts[1], quantity: 1 },
-                ],
-                total: initialProducts[0].price + initialProducts[1].price,
-                paymentMethod: "Split",
-            };
-            return [todaySale, ...prevSales];
-        }
-        return prevSales;
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    const storedSales = localStorage.getItem('sales');
+    setSales(storedSales ? JSON.parse(storedSales) : initialSales);
   }, []);
 
 
@@ -95,11 +69,11 @@ const SalesHistoryTable: FC = () => {
 
   const handleSaveChanges = () => {
     if (selectedSale) {
-      setSales(prevSales =>
-        prevSales.map(sale =>
-          sale.id === selectedSale.id ? selectedSale : sale
-        )
-      );
+        const updatedSales = sales.map(sale =>
+            sale.id === selectedSale.id ? selectedSale : sale
+        );
+      setSales(updatedSales);
+      localStorage.setItem('sales', JSON.stringify(updatedSales));
       toast({
         title: "Changes Saved",
         description: "The payment method has been updated.",
@@ -166,7 +140,7 @@ const SalesHistoryTable: FC = () => {
             {sales.map((sale) => (
               <TableRow key={sale.id}>
                 <TableCell className="font-medium">
-                  <Badge variant="outline">#{sale.id.slice(0, 8)}</Badge>
+                  <Badge variant="outline">#{sale.id.slice(-6)}</Badge>
                 </TableCell>
                 <TableCell>
                   {new Date(sale.date).toLocaleString()}
@@ -194,7 +168,7 @@ const SalesHistoryTable: FC = () => {
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
                   <Receipt className="h-5 w-5" />
-                  Sale Details - #{selectedSale.id.slice(0, 8)}
+                  Sale Details - #{selectedSale.id.slice(-6)}
                 </DialogTitle>
               </DialogHeader>
               <div className="space-y-4">

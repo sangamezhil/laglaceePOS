@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, type FC, useEffect, useRef } from "react";
-import type { Product, CartItem } from "@/lib/types";
+import type { Product, CartItem, Sale } from "@/lib/types";
 import { initialProducts } from "@/data/products";
 import ProductGrid, { type ProductGridHandle } from "@/components/pos/ProductGrid";
 import Cart from "@/components/pos/Cart";
@@ -18,14 +18,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { initialSales } from "@/data/sales";
 
 
 const POSPage: FC = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [products] = useState<Product[]>(initialProducts);
   const [userRole, setUserRole] = useState('cashier'); // Default to cashier
-  const [userInitial, setUserInitial] = useState('C');
   const [appName, setAppName] = useState("ShopSwift");
   const [logoUrl, setLogoUrl] = useState("");
   const productGridRef = useRef<ProductGridHandle>(null);
@@ -34,7 +33,6 @@ const POSPage: FC = () => {
     // In a real app, you'd get this from a proper auth context/session.
     const role = localStorage.getItem('userRole') || 'cashier';
     setUserRole(role);
-    setUserInitial(role.charAt(0).toUpperCase());
 
     const storedAppName = localStorage.getItem("companyName");
     if (storedAppName) {
@@ -44,6 +42,11 @@ const POSPage: FC = () => {
     const storedLogoUrl = localStorage.getItem("logoUrl");
     if (storedLogoUrl) {
       setLogoUrl(storedLogoUrl);
+    }
+    
+    // Initialize sales in localStorage if not already there
+    if (!localStorage.getItem('sales')) {
+      localStorage.setItem('sales', JSON.stringify(initialSales));
     }
 
   }, []);
@@ -82,7 +85,20 @@ const POSPage: FC = () => {
     setCart([]);
   };
 
-  const handleSuccessfulCheckout = () => {
+  const handleSuccessfulCheckout = (paymentMethod: Sale['paymentMethod'], total: number) => {
+    const newSale: Sale = {
+      id: `sale-${Date.now()}`,
+      date: new Date().toISOString(),
+      items: cart,
+      total: total,
+      paymentMethod: paymentMethod,
+    };
+
+    const existingSalesString = localStorage.getItem('sales');
+    const existingSales: Sale[] = existingSalesString ? JSON.parse(existingSalesString) : [];
+    const updatedSales = [newSale, ...existingSales];
+    localStorage.setItem('sales', JSON.stringify(updatedSales));
+
     clearCart();
     productGridRef.current?.focusSearch();
   };

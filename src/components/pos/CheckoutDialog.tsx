@@ -16,12 +16,13 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle } from "lucide-react";
+import type { Sale } from "@/lib/types";
 
 interface CheckoutDialogProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   total: number;
-  onCheckout: () => void;
+  onCheckout: (paymentMethod: Sale['paymentMethod']) => void;
 }
 
 type PaymentMethod = "Cash" | "UPI" | "Split";
@@ -84,7 +85,7 @@ const CheckoutDialog: FC<CheckoutDialogProps> = ({
   const changeDue = (parseFloat(cashAmount) || 0) - total;
 
   const handleConfirm = () => {
-    onCheckout();
+    onCheckout(paymentMethod);
     toast({
       title: "Payment Successful",
       description: `Total amount of Rs.${total.toFixed(2)} has been paid.`,
