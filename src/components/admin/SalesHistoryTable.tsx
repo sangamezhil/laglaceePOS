@@ -52,23 +52,22 @@ const SalesHistoryTable: FC = () => {
     const role = localStorage.getItem('userRole') || 'cashier';
     setUserRole(role);
 
-    const todaySale: Sale = {
-        id: "sale-today",
-        date: new Date().toISOString(),
-        items: [
-            { product: initialProducts[0], quantity: 1 },
-            { product: initialProducts[1], quantity: 1 },
-        ],
-        total: 1.99 + 4.50,
-        paymentMethod: "Split",
-    };
-    
-    setSales(prevSales => {
-        if (prevSales.find(s => s.id === 'sale-today')) {
-            return prevSales;
-        }
-        return [todaySale, ...prevSales];
-    });
+    const today = new Date();
+    const hasTodaySale = sales.some(s => new Date(s.date).toDateString() === today.toDateString());
+
+    if (!hasTodaySale) {
+        const todaySale: Sale = {
+            id: "sale-today",
+            date: today.toISOString(),
+            items: [
+                { product: initialProducts[0], quantity: 1 },
+                { product: initialProducts[1], quantity: 1 },
+            ],
+            total: 1.99 + 4.50,
+            paymentMethod: "Split",
+        };
+        setSales(prevSales => [todaySale, ...prevSales]);
+    }
 
   }, []);
 
@@ -106,21 +105,29 @@ const SalesHistoryTable: FC = () => {
       (sale) => new Date(sale.date).toDateString() === today
     );
 
-    const todaysTotal = todaysSales.reduce((acc, sale) => acc + sale.total, 0);
-    const cashTotal = todaysSales
-      .reduce((acc, sale) => {
-          if (sale.paymentMethod === 'Cash') return acc + sale.total;
-          if (sale.paymentMethod === 'Split') return acc + sale.total / 2;
-          return acc;
-      }, 0);
-    const upiTotal = todaysSales
-      .reduce((acc, sale) => {
-           if (sale.paymentMethod === 'UPI') return acc + sale.total;
-           if (sale.paymentMethod === 'Split') return acc + sale.total / 2;
-           return acc;
-      }, 0);
+    let cash = 0;
+    let upi = 0;
 
-    return { todaysTotal, cashTotal, upiTotal };
+    todaysSales.forEach(sale => {
+        switch (sale.paymentMethod) {
+            case 'Cash':
+                cash += sale.total;
+                break;
+            case 'UPI':
+                upi += sale.total;
+                break;
+            case 'Split':
+                // For this prototype, we assume a 50/50 split.
+                // A real app would store the exact amounts.
+                cash += sale.total / 2;
+                upi += sale.total / 2;
+                break;
+        }
+    });
+    
+    const todaysTotal = todaysSales.reduce((acc, sale) => acc + sale.total, 0);
+
+    return { todaysTotal, cashTotal: cash, upiTotal: upi };
   }, [sales]);
 
 
