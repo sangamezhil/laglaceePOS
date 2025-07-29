@@ -62,15 +62,15 @@ const SalesHistoryTable: FC = () => {
         return saleDate === today && sale.id.startsWith('sale-'); // Simple check
     });
 
-    if (!hasTodaySale) {
+    if (!hasTodaySale && initialSales.some(s => s.id === 'sale-today')) {
         const todaySale = initialSales.find(s => s.id === 'sale-today');
         if (todaySale) {
             const newSale = { ...todaySale, id: `sale-${Date.now()}`, date: new Date().toISOString() };
             existingSales = [newSale, ...existingSales];
-            localStorage.setItem('sales', JSON.stringify(existingSales));
         }
     }
     
+    localStorage.setItem('sales', JSON.stringify(existingSales));
     setSales(existingSales);
 
   }, []);
@@ -122,8 +122,6 @@ const SalesHistoryTable: FC = () => {
                 upi += sale.total;
                 break;
             case 'Split':
-                // For this prototype, we assume a 50/50 split.
-                // A real app would store the exact amounts.
                 cash += sale.total / 2;
                 upi += sale.total / 2;
                 break;
