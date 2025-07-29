@@ -10,7 +10,7 @@ const ptSans = PT_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "ShopSwift POS",
+  title: "ShopSwift",
   description: "A modern Point of Sale system for seamless retail operations.",
 };
 

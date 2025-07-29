@@ -1,4 +1,7 @@
 
+"use client";
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/pos/ShopSwiftLogo';
@@ -18,12 +21,21 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode
 }) {
+  const [appName, setAppName] = useState("ShopSwift");
+
+  useEffect(() => {
+    const storedAppName = localStorage.getItem("companyName");
+    if (storedAppName) {
+      setAppName(storedAppName);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-background font-body">
       <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b bg-card px-4 md:px-6">
         <nav className="hidden md:flex md:items-center md:gap-6 text-sm font-medium">
           <Link href="/admin/inventory" className="mr-4">
-            <Logo />
+            <Logo appName={appName} />
           </Link>
           <Link href="/" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
             <LayoutDashboard className="h-4 w-4" />
@@ -47,7 +59,7 @@ export default function AdminLayout({
           </Link>
         </nav>
         <div className="md:hidden">
-            <Logo />
+            <Logo appName={appName} />
         </div>
         <div>
            <DropdownMenu>

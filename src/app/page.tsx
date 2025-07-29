@@ -26,6 +26,7 @@ const POSPage: FC = () => {
   const [products] = useState<Product[]>(initialProducts);
   const [userRole, setUserRole] = useState('cashier'); // Default to cashier
   const [userInitial, setUserInitial] = useState('C');
+  const [appName, setAppName] = useState("ShopSwift");
   const productGridRef = useRef<ProductGridHandle>(null);
 
   useEffect(() => {
@@ -33,6 +34,13 @@ const POSPage: FC = () => {
     const role = localStorage.getItem('userRole') || 'cashier';
     setUserRole(role);
     setUserInitial(role.charAt(0).toUpperCase());
+
+    const storedAppName = localStorage.getItem("companyName");
+    if (storedAppName) {
+      setAppName(storedAppName);
+      document.title = storedAppName;
+    }
+
   }, []);
 
   const addToCart = (product: Product) => {
@@ -79,7 +87,7 @@ const POSPage: FC = () => {
   return (
     <div className="flex flex-col h-screen bg-background font-body">
       <header className="flex items-center justify-between px-6 py-3 border-b bg-card">
-        <Logo />
+        <Logo appName={appName} />
         <div className="flex items-center gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

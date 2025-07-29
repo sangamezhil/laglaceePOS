@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,12 +18,33 @@ import { Save } from "lucide-react";
 
 export default function ProfilePage() {
     const { toast } = useToast();
+    const [companyName, setCompanyName] = useState("");
+    const [contactEmail, setContactEmail] = useState("");
+    const [address, setAddress] = useState("");
+    const [phone, setPhone] = useState("");
+    const [taxId, setTaxId] = useState("");
+
+    useEffect(() => {
+        setCompanyName(localStorage.getItem("companyName") || "");
+        setContactEmail(localStorage.getItem("contactEmail") || "");
+        setAddress(localStorage.getItem("address") || "");
+        setPhone(localStorage.getItem("phone") || "");
+        setTaxId(localStorage.getItem("taxId") || "");
+    }, []);
 
     const handleSaveChanges = () => {
+        localStorage.setItem("companyName", companyName);
+        localStorage.setItem("contactEmail", contactEmail);
+        localStorage.setItem("address", address);
+        localStorage.setItem("phone", phone);
+        localStorage.setItem("taxId", taxId);
+
         toast({
             title: "Changes Saved",
             description: "Your company details have been updated.",
         });
+
+        window.location.reload();
     }
 
   return (
@@ -43,25 +65,25 @@ export default function ProfilePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
              <div className="space-y-2">
                 <Label htmlFor="company-name">Company Name</Label>
-                <Input id="company-name" placeholder="Your Company Inc." />
+                <Input id="company-name" placeholder="Your Company Inc." value={companyName} onChange={(e) => setCompanyName(e.target.value)} />
             </div>
              <div className="space-y-2">
                 <Label htmlFor="contact-email">Contact Email</Label>
-                <Input id="contact-email" type="email" placeholder="contact@yourcompany.com" />
+                <Input id="contact-email" type="email" placeholder="contact@yourcompany.com" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} />
             </div>
           </div>
            <div className="space-y-2">
             <Label htmlFor="address">Address</Label>
-            <Input id="address" placeholder="123 Main St, Anytown, USA" />
+            <Input id="address" placeholder="123 Main St, Anytown, USA" value={address} onChange={(e) => setAddress(e.target.value)} />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
              <div className="space-y-2">
                 <Label htmlFor="phone">Phone Number</Label>
-                <Input id="phone" type="tel" placeholder="+1 (234) 567-890" />
+                <Input id="phone" type="tel" placeholder="+1 (234) 567-890" value={phone} onChange={(e) => setPhone(e.target.value)} />
             </div>
              <div className="space-y-2">
                 <Label htmlFor="tax-id">Tax ID / GSTIN</Label>
-                <Input id="tax-id" placeholder="Your Tax ID" />
+                <Input id="tax-id" placeholder="Your Tax ID" value={taxId} onChange={(e) => setTaxId(e.target.value)} />
             </div>
           </div>
         </CardContent>
