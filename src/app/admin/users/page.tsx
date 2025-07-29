@@ -37,6 +37,12 @@ interface DownloadHistoryItem {
   downloadedAt: Date;
 }
 
+// Mock user data for download, in a real app this would come from the UserTable state or an API
+const usersForDownload = [
+    { id: 1, username: 'admin', role: 'admin' },
+    { id: 2, username: 'cashier', role: 'cashier' },
+];
+
 export default function UserManagementPage() {
   const [date, setDate] = useState<DateRange | undefined>();
   const [downloadHistory, setDownloadHistory] = useState<DownloadHistoryItem[]>([]);
@@ -53,6 +59,28 @@ export default function UserManagementPage() {
     }
 
     const rangeString = `${format(date.from, "LLL dd, y")} - ${format(date.to, "LLL dd, y")}`;
+    
+    // 1. Convert user data to CSV format
+    const headers = ["ID", "Username", "Role"];
+    const csvContent = [
+      headers.join(","),
+      ...usersForDownload.map(user => `${user.id},${user.username},${user.role}`)
+    ].join("\n");
+
+    // 2. Create a Blob
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    
+    // 3. Create a download link and trigger the download
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `users-${format(new Date(), "yyyy-MM-dd")}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    // Update download history
     const newHistoryItem: DownloadHistoryItem = {
       id: Date.now(),
       range: rangeString,
@@ -65,9 +93,6 @@ export default function UserManagementPage() {
       title: "Download Started",
       description: `User data for ${rangeString} is being prepared.`,
     });
-
-    // In a real app, you would trigger the actual file download here.
-    console.log("Downloading data for:", rangeString);
   };
 
   return (
