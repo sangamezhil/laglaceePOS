@@ -52,7 +52,6 @@ const SalesHistoryTable: FC = () => {
     const role = localStorage.getItem('userRole') || 'cashier';
     setUserRole(role);
 
-    // Add a sale for today on the client-side to avoid hydration errors
     const todaySale: Sale = {
         id: "sale-today",
         date: new Date().toISOString(),
@@ -64,12 +63,11 @@ const SalesHistoryTable: FC = () => {
         paymentMethod: "Cash",
     };
     
-    // Check if the sale already exists to avoid duplicates on re-renders
     if (!sales.find(s => s.id === 'sale-today')) {
         setSales(prevSales => [...prevSales, todaySale]);
     }
 
-  }, []);
+  }, [sales]);
 
   const openSaleDetails = (sale: Sale) => {
     setSelectedSale({ ...sale });
@@ -99,12 +97,23 @@ const SalesHistoryTable: FC = () => {
 
   const isUserAdmin = userRole === 'admin';
 
-  const todaysTotal = useMemo(() => {
+  const { todaysTotal, cashTotal, upiTotal } = useMemo(() => {
     const today = new Date().toDateString();
-    return sales
-      .filter(sale => new Date(sale.date).toDateString() === today)
+    const todaysSales = sales.filter(
+      (sale) => new Date(sale.date).toDateString() === today
+    );
+
+    const todaysTotal = todaysSales.reduce((acc, sale) => acc + sale.total, 0);
+    const cashTotal = todaysSales
+      .filter((sale) => sale.paymentMethod === "Cash")
       .reduce((acc, sale) => acc + sale.total, 0);
+    const upiTotal = todaysSales
+      .filter((sale) => sale.paymentMethod === "UPI")
+      .reduce((acc, sale) => acc + sale.total, 0);
+
+    return { todaysTotal, cashTotal, upiTotal };
   }, [sales]);
+
 
   return (
     <Card>
@@ -221,7 +230,13 @@ const SalesHistoryTable: FC = () => {
           </Dialog>
         )}
       </CardContent>
-      <CardFooter className="flex justify-end pt-6">
+       <CardFooter className="flex justify-between items-start pt-6">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm text-muted-foreground">
+          <div className="font-medium text-foreground">Cash Sales:</div>
+          <div className="font-semibold text-foreground text-right">Rs.{cashTotal.toFixed(2)}</div>
+          <div className="font-medium text-foreground">UPI Sales:</div>
+          <div className="font-semibold text-foreground text-right">Rs.{upiTotal.toFixed(2)}</div>
+        </div>
         <div className="text-right">
             <p className="text-muted-foreground">Today's Grand Total</p>
             <p className="text-2xl font-bold">Rs.{todaysTotal.toFixed(2)}</p>
