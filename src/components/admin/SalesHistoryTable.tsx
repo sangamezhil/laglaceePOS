@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, type FC, useEffect } from "react";
+import { useState, type FC, useEffect, useMemo } from "react";
 import type { Sale } from "@/lib/types";
 import { initialSales } from "@/data/sales";
 import {
@@ -18,6 +18,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
+  CardFooter,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -78,6 +79,13 @@ const SalesHistoryTable: FC = () => {
   };
 
   const isUserAdmin = userRole === 'admin';
+
+  const todaysTotal = useMemo(() => {
+    const today = new Date().toDateString();
+    return sales
+      .filter(sale => new Date(sale.date).toDateString() === today)
+      .reduce((acc, sale) => acc + sale.total, 0);
+  }, [sales]);
 
   return (
     <Card>
@@ -194,6 +202,12 @@ const SalesHistoryTable: FC = () => {
           </Dialog>
         )}
       </CardContent>
+      <CardFooter className="flex justify-end pt-6">
+        <div className="text-right">
+            <p className="text-muted-foreground">Today's Grand Total</p>
+            <p className="text-2xl font-bold">Rs.{todaysTotal.toFixed(2)}</p>
+        </div>
+      </CardFooter>
     </Card>
   );
 };
