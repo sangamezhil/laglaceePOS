@@ -4,6 +4,7 @@
 import { useState, type FC, useEffect, useMemo } from "react";
 import type { Sale } from "@/lib/types";
 import { initialSales } from "@/data/sales";
+import { initialProducts } from "@/data/products";
 import {
   Table,
   TableBody,
@@ -50,6 +51,24 @@ const SalesHistoryTable: FC = () => {
   useEffect(() => {
     const role = localStorage.getItem('userRole') || 'cashier';
     setUserRole(role);
+
+    // Add a sale for today on the client-side to avoid hydration errors
+    const todaySale: Sale = {
+        id: "sale-today",
+        date: new Date().toISOString(),
+        items: [
+            { product: initialProducts[0], quantity: 1 },
+            { product: initialProducts[1], quantity: 1 },
+        ],
+        total: 1.99 + 4.50,
+        paymentMethod: "Cash",
+    };
+    
+    // Check if the sale already exists to avoid duplicates on re-renders
+    if (!sales.find(s => s.id === 'sale-today')) {
+        setSales(prevSales => [...prevSales, todaySale]);
+    }
+
   }, []);
 
   const openSaleDetails = (sale: Sale) => {
