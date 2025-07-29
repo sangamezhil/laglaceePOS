@@ -33,12 +33,12 @@ export default function InventoryPage() {
       toast({
         variant: "destructive",
         title: "No file selected",
-        description: "Please select a CSV file to import.",
+        description: "Please select an Excel file to import.",
       });
       return;
     }
 
-    // Here you would typically parse the CSV and update the products state.
+    // Here you would typically parse the Excel file and update the products state.
     // For now, we'll just show a success message.
     console.log("Importing file:", importFile.name);
 
@@ -70,18 +70,18 @@ export default function InventoryPage() {
               <DialogHeader>
                 <DialogTitle>Import Products</DialogTitle>
                 <DialogDescription>
-                  Select a CSV file to import new products into your inventory. The file should have columns: name, price, stock, category, sku.
+                  Select an Excel file to import new products into your inventory. The file should have columns: name, price, stock, category, sku.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="import-file" className="text-right">
-                    CSV File
+                    Excel File
                   </Label>
                   <Input
                     id="import-file"
                     type="file"
-                    accept=".csv"
+                    accept=".xlsx, .xls"
                     onChange={handleFileChange}
                     className="col-span-3"
                   />
