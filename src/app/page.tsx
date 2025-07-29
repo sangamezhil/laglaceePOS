@@ -1,10 +1,10 @@
 
 "use client";
 
-import { useState, type FC, useEffect } from "react";
+import { useState, type FC, useEffect, useRef } from "react";
 import type { Product, CartItem } from "@/lib/types";
 import { initialProducts } from "@/data/products";
-import ProductGrid from "@/components/pos/ProductGrid";
+import ProductGrid, { type ProductGridHandle } from "@/components/pos/ProductGrid";
 import Cart from "@/components/pos/Cart";
 import { ShopSwiftLogo } from "@/components/pos/ShopSwiftLogo";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ const POSPage: FC = () => {
   const [products] = useState<Product[]>(initialProducts);
   const [userRole, setUserRole] = useState('cashier'); // Default to cashier
   const [userInitial, setUserInitial] = useState('C');
+  const productGridRef = useRef<ProductGridHandle>(null);
 
   useEffect(() => {
     // In a real app, you'd get this from a proper auth context/session.
@@ -66,6 +67,11 @@ const POSPage: FC = () => {
 
   const clearCart = () => {
     setCart([]);
+  };
+
+  const handleSuccessfulCheckout = () => {
+    clearCart();
+    productGridRef.current?.focusSearch();
   };
 
   const isAdmin = userRole === 'admin';
@@ -142,7 +148,7 @@ const POSPage: FC = () => {
       <main className="flex-1 overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-3 h-full">
           <div className="lg:col-span-2 h-full overflow-y-auto p-4 sm:p-6">
-            <ProductGrid products={products} onAddToCart={addToCart} />
+            <ProductGrid ref={productGridRef} products={products} onAddToCart={addToCart} />
           </div>
           <div className="h-full bg-card border-l flex flex-col">
             <Cart
@@ -150,6 +156,7 @@ const POSPage: FC = () => {
               onUpdateQuantity={updateQuantity}
               onRemoveFromCart={removeFromCart}
               onClearCart={clearCart}
+              onSuccessfulCheckout={handleSuccessfulCheckout}
             />
           </div>
         </div>

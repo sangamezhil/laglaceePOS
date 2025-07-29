@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, type FC } from "react";
@@ -14,9 +15,10 @@ interface CartProps {
   onUpdateQuantity: (productId: number, quantity: number) => void;
   onRemoveFromCart: (productId: number) => void;
   onClearCart: () => void;
+  onSuccessfulCheckout: () => void;
 }
 
-const Cart: FC<CartProps> = ({ cart, onUpdateQuantity, onRemoveFromCart, onClearCart }) => {
+const Cart: FC<CartProps> = ({ cart, onUpdateQuantity, onRemoveFromCart, onClearCart, onSuccessfulCheckout }) => {
   const [isCheckoutOpen, setCheckoutOpen] = useState(false);
 
   const total = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
@@ -25,7 +27,7 @@ const Cart: FC<CartProps> = ({ cart, onUpdateQuantity, onRemoveFromCart, onClear
   const tax = total - subtotal;
 
   const handleCheckout = () => {
-    onClearCart();
+    onSuccessfulCheckout();
     setCheckoutOpen(false);
   }
 

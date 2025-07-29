@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState, useMemo, useRef, useEffect, type FC } from "react";
+import { useState, useMemo, useRef, useEffect, type FC, forwardRef, useImperativeHandle } from "react";
 import type { Product } from "@/lib/types";
 import { Input } from "@/components/ui/input";
 import { Search, Barcode } from "lucide-react";
@@ -11,13 +12,23 @@ interface ProductGridProps {
   onAddToCart: (product: Product) => void;
 }
 
-const ProductGrid: FC<ProductGridProps> = ({ products, onAddToCart }) => {
+export interface ProductGridHandle {
+  focusSearch: () => void;
+}
+
+const ProductGrid: FC<ProductGridProps> = forwardRef<ProductGridHandle, ProductGridProps>(({ products, onAddToCart }, ref) => {
   const [searchTerm, setSearchTerm] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     searchInputRef.current?.focus();
   }, []);
+
+  useImperativeHandle(ref, () => ({
+    focusSearch: () => {
+      searchInputRef.current?.focus();
+    },
+  }));
 
   const filteredProducts = useMemo(() => {
     if (!searchTerm) return products;
@@ -64,6 +75,8 @@ const ProductGrid: FC<ProductGridProps> = ({ products, onAddToCart }) => {
       )}
     </div>
   );
-};
+});
+
+ProductGrid.displayName = 'ProductGrid';
 
 export default ProductGrid;
