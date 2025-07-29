@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Save } from "lucide-react";
+import { addActivityLog } from "@/lib/activityLog";
 
 export default function ProfilePage() {
     const { toast } = useToast();
@@ -41,6 +42,13 @@ export default function ProfilePage() {
         localStorage.setItem("phone", phone);
         localStorage.setItem("taxId", taxId);
         localStorage.setItem("logoUrl", logoUrl);
+
+        addActivityLog({
+            username: 'admin',
+            role: 'admin',
+            action: 'Updated Profile',
+            details: 'Company profile details were updated.'
+        });
 
         toast({
             title: "Changes Saved",

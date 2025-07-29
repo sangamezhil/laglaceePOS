@@ -19,6 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { initialSales } from "@/data/sales";
+import { addActivityLog } from "@/lib/activityLog";
 
 
 const POSPage: FC = () => {
@@ -99,9 +100,27 @@ const POSPage: FC = () => {
     const updatedSales = [newSale, ...existingSales];
     localStorage.setItem('sales', JSON.stringify(updatedSales));
 
+     addActivityLog({
+      username: userRole,
+      role: userRole as 'admin' | 'cashier',
+      action: "Processed Sale",
+      details: `Sale ID: ${newSale.id.slice(-6)}, Total: Rs.${total.toFixed(2)}`
+    });
+
     clearCart();
     productGridRef.current?.focusSearch();
   };
+
+  const handleLogout = () => {
+    addActivityLog({
+      username: userRole,
+      role: userRole as 'admin' | 'cashier',
+      action: "Logged Out",
+      details: "User logged out successfully."
+    });
+    // In a real app, you would also clear session/authentication state here.
+  };
+
 
   const isAdmin = userRole === 'admin';
 
@@ -172,7 +191,7 @@ const POSPage: FC = () => {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/login">
+                  <Link href="/login" onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </Link>

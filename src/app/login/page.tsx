@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/pos/ShopSwiftLogo";
 import { useToast } from "@/hooks/use-toast";
+import { addActivityLog } from "@/lib/activityLog";
 
 const LoginPage: FC = () => {
   const router = useRouter();
@@ -66,9 +67,14 @@ const LoginPage: FC = () => {
     }
 
     if (loginSuccess) {
-      // In a real app, you'd use a more robust session management system.
-      // For this prototype, localStorage is sufficient.
       localStorage.setItem('userRole', role);
+
+      addActivityLog({
+        username: role,
+        role: role as 'admin' | 'cashier',
+        action: "Logged In",
+        details: "Successfully authenticated."
+      });
 
       toast({
         title: "Login Successful",

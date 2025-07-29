@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, type FC } from "react";
@@ -21,6 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Trash2, Edit, Save } from "lucide-react";
+import { addActivityLog } from "@/lib/activityLog";
 
 const InventoryTable: FC = () => {
   const [products, setProducts] = useState<Product[]>(initialProducts);
@@ -33,12 +35,30 @@ const InventoryTable: FC = () => {
   };
 
   const handleSave = (id: number) => {
+    const productToUpdate = products.find(p => p.id === id);
+    if (productToUpdate) {
+      addActivityLog({
+        username: 'admin',
+        role: 'admin',
+        action: "Updated Product",
+        details: `Product: ${productToUpdate.name}`
+      });
+    }
     setProducts(products.map(p => p.id === id ? { ...p, ...editedProduct } : p));
     setEditingId(null);
     setEditedProduct({});
   };
 
   const handleDelete = (id: number) => {
+    const productToDelete = products.find(p => p.id === id);
+    if (productToDelete) {
+       addActivityLog({
+        username: 'admin',
+        role: 'admin',
+        action: "Deleted Product",
+        details: `Product: ${productToDelete.name}`
+      });
+    }
     setProducts(products.filter(p => p.id !== id));
   };
   

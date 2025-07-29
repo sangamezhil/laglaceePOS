@@ -32,6 +32,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { addActivityLog } from "@/lib/activityLog";
 
 
 interface User {
@@ -61,12 +62,30 @@ const UserTable: FC = () => {
   };
 
   const handleSave = (id: number) => {
+    const userToUpdate = users.find(u => u.id === id);
+     if (userToUpdate) {
+        addActivityLog({
+            username: 'admin',
+            role: 'admin',
+            action: 'Updated User',
+            details: `Updated details for user: ${userToUpdate.username}`
+        });
+    }
     setUsers(users.map(u => u.id === id ? { ...u, ...editedUser } as User : u));
     setEditingId(null);
     setEditedUser({});
   };
 
   const handleDelete = (id: number) => {
+    const userToDelete = users.find(u => u.id === id);
+    if (userToDelete) {
+        addActivityLog({
+            username: 'admin',
+            role: 'admin',
+            action: 'Deleted User',
+            details: `Deleted user: ${userToDelete.username}`
+        });
+    }
     setUsers(users.filter(u => u.id !== id));
   };
   
@@ -89,8 +108,16 @@ const UserTable: FC = () => {
       });
       return;
     }
-    // In a real app, you'd call an API to update the password.
-    // For now, we'll just show a success message.
+    
+    if (selectedUser) {
+        addActivityLog({
+            username: 'admin',
+            role: 'admin',
+            action: 'Reset Password',
+            details: `Reset password for user: ${selectedUser.username}`
+        });
+    }
+    
     console.log(`Password for ${selectedUser?.username} reset to: ${newPassword}`);
     toast({
       title: "Password Reset Successful",
