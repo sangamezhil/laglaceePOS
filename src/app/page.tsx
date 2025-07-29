@@ -127,13 +127,15 @@ const POSPage: FC = () => {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                 <DropdownMenuItem asChild>
-                    <Link href={isAdmin ? "/admin/profile" : "/"}>
-                        <User className="mr-2 h-4 w-4" />
-                        <span>Profile</span>
+                 {isAdmin && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin/profile">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Profile</span>
                     </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
+                  </DropdownMenuItem>
+                 )}
+                {isAdmin && <DropdownMenuSeparator />}
                  {isAdmin && (
                   <>
                      <DropdownMenuItem asChild>

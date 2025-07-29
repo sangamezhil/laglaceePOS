@@ -101,13 +101,15 @@ export default function SalesHistoryLayout({
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                    <Link href={isAdmin ? "/admin/profile" : "/"}>
-                        <User className="mr-2 h-4 w-4" />
-                        <span>Profile</span>
+                {isAdmin && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin/profile">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Profile</span>
                     </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
+                  </DropdownMenuItem>
+                )}
+                {isAdmin && <DropdownMenuSeparator />}
                  <DropdownMenuItem asChild>
                   <Link href="/">
                     <LayoutDashboard className="mr-2 h-4 w-4" />
