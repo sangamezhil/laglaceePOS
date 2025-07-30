@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
 import type { Product } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -22,14 +22,22 @@ import { useToast } from "@/hooks/use-toast";
 import { addActivityLog } from "@/lib/activityLog";
 
 export default function InventoryPage() {
-  const [products, setProducts] = useState<Product[]>(() => {
-    if (typeof window === 'undefined') return [];
-    const savedProducts = localStorage.getItem('products');
-    return savedProducts ? JSON.parse(savedProducts) : [];
-  });
+  const [products, setProducts] = useState<Product[]>([]);
   const [isImportOpen, setImportOpen] = useState(false);
   const [importFile, setImportFile] = useState<File | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const savedProducts = localStorage.getItem('products');
+    if (savedProducts) {
+      setProducts(JSON.parse(savedProducts));
+    }
+  }, []);
+
+  const updateProducts = (newProducts: Product[]) => {
+    localStorage.setItem('products', JSON.stringify(newProducts));
+    setProducts(newProducts);
+  }
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -65,11 +73,7 @@ export default function InventoryPage() {
           barcode: row.barcode || `BARCODE-${Date.now() + index}`,
         }));
 
-        setProducts((prevProducts) => {
-            const updatedProducts = [...prevProducts, ...newProducts];
-            localStorage.setItem('products', JSON.stringify(updatedProducts));
-            return updatedProducts;
-        });
+        updateProducts([...products, ...newProducts]);
 
         addActivityLog({
           username: 'admin',
@@ -158,7 +162,7 @@ export default function InventoryPage() {
           </Button>
         </div>
       </div>
-      <InventoryTable products={products} setProducts={setProducts} />
+      <InventoryTable products={products} setProducts={updateProducts} />
     </div>
   );
 }
