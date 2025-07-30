@@ -27,6 +27,10 @@ export interface User {
     role: 'admin' | 'cashier';
 }
 
+export interface UserCredentials extends User {
+    password?: string;
+}
+
 export interface ActivityLog {
   id: string;
   username: string;

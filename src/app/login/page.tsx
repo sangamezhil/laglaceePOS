@@ -18,6 +18,7 @@ import { Logo } from "@/components/pos/ShopSwiftLogo";
 import { useToast } from "@/hooks/use-toast";
 import { addActivityLog } from "@/lib/activityLog";
 import { Loader2 } from "lucide-react";
+import { getUsers, UserCredentials } from "@/lib/users";
 
 const LoginPage: FC = () => {
   const router = useRouter();
@@ -54,37 +55,27 @@ const LoginPage: FC = () => {
 
     // Simulate network delay
     setTimeout(() => {
-      const adminCredentials = { username: "admin", password: "adminpassword" };
-      const cashierCredentials = { username: "cashier", password: "cashierpassword" };
+      const users = getUsers();
+      const user = users.find(
+        (u: UserCredentials) => u.username === username && u.password === password
+      );
 
-      let loginSuccess = false;
-      let redirectPath = "";
-      let role = "";
-
-      if (username === adminCredentials.username && password === adminCredentials.password) {
-        loginSuccess = true;
-        redirectPath = "/admin/inventory";
-        role = "admin";
-      } else if (username === cashierCredentials.username && password === cashierCredentials.password) {
-        loginSuccess = true;
-        redirectPath = "/";
-        role = "cashier";
-      }
-
-      if (loginSuccess) {
-        localStorage.setItem('userRole', role);
+      if (user) {
+        localStorage.setItem('userRole', user.role);
 
         addActivityLog({
-          username: role,
-          role: role as 'admin' | 'cashier',
+          username: user.username,
+          role: user.role,
           action: "Logged In",
           details: "Successfully authenticated."
         });
 
         toast({
           title: "Login Successful",
-          description: `Logged in as ${role}. Redirecting...`,
+          description: `Logged in as ${user.role}. Redirecting...`,
         });
+        
+        const redirectPath = user.role === 'admin' ? '/admin/inventory' : '/';
         router.push(redirectPath);
       } else {
         toast({

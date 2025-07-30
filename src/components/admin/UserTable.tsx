@@ -32,24 +32,24 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { addActivityLog } from "@/lib/activityLog";
-import type { User } from "@/lib/types";
+import type { User, UserCredentials } from "@/lib/types";
+import { getUsers, saveUsers } from "@/lib/users";
 
-
-const initialUsers: User[] = [
-    { id: 1, username: 'admin', role: 'admin' },
-    { id: 2, username: 'cashier', role: 'cashier' },
-]
 
 const UserTable: FC = () => {
-  const [users, setUsers] = useState<User[]>(initialUsers);
+  const [users, setUsers] = useState<UserCredentials[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedUser, setEditedUser] = useState<Partial<User>>({});
   const { toast } = useToast();
   const [isResetDialogOpen, setResetDialogOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUser, setSelectedUser] = useState<UserCredentials | null>(null);
   const [newPassword, setNewPassword] = useState("");
 
-  const handleEdit = (user: User) => {
+  useEffect(() => {
+    setUsers(getUsers());
+  }, []);
+
+  const handleEdit = (user: UserCredentials) => {
     setEditingId(user.id);
     setEditedUser(user);
   };
@@ -64,7 +64,9 @@ const UserTable: FC = () => {
             details: `Updated details for user: ${userToUpdate.username}`
         });
     }
-    setUsers(users.map(u => u.id === id ? { ...u, ...editedUser } as User : u));
+    const updatedUsers = users.map(u => u.id === id ? { ...u, ...editedUser } as UserCredentials : u)
+    setUsers(updatedUsers);
+    saveUsers(updatedUsers);
     setEditingId(null);
     setEditedUser({});
   };
@@ -79,14 +81,16 @@ const UserTable: FC = () => {
             details: `Deleted user: ${userToDelete.username}`
         });
     }
-    setUsers(users.filter(u => u.id !== id));
+    const updatedUsers = users.filter(u => u.id !== id);
+    setUsers(updatedUsers);
+    saveUsers(updatedUsers);
   };
   
   const handleInputChange = (field: keyof User, value: string) => {
     setEditedUser(prev => ({ ...prev, [field]: value }));
   };
 
-  const openResetPasswordDialog = (user: User) => {
+  const openResetPasswordDialog = (user: UserCredentials) => {
     setSelectedUser(user);
     setNewPassword("");
     setResetDialogOpen(true);
@@ -103,19 +107,23 @@ const UserTable: FC = () => {
     }
     
     if (selectedUser) {
+        const updatedUsers = users.map(u => u.id === selectedUser.id ? { ...u, password: newPassword } : u);
+        setUsers(updatedUsers);
+        saveUsers(updatedUsers);
+
         addActivityLog({
             username: 'admin',
             role: 'admin',
             action: 'Reset Password',
             details: `Reset password for user: ${selectedUser.username}`
         });
+        
+        toast({
+          title: "Password Reset Successful",
+          description: `The password for ${selectedUser?.username} has been updated.`,
+        });
     }
     
-    console.log(`Password for ${selectedUser?.username} reset to: ${newPassword}`);
-    toast({
-      title: "Password Reset Successful",
-      description: `The password for ${selectedUser?.username} has been updated.`,
-    });
     setResetDialogOpen(false);
     setSelectedUser(null);
   }
