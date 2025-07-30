@@ -31,9 +31,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import type { User, Sale } from "@/lib/types";
+import type { User, Sale, Product } from "@/lib/types";
 import { getActivityLog } from "@/lib/activityLog";
-import { initialProducts } from "@/data/products";
 
 
 interface DownloadHistoryItem {
@@ -62,7 +61,7 @@ export default function UserManagementPage() {
     // 1. Fetch all data from localStorage
     const salesData: Sale[] = JSON.parse(localStorage.getItem('sales') || '[]');
     const activityLogData = getActivityLog();
-    const productsData = initialProducts; // This could be enhanced to fetch from a live state if needed
+    const productsData: Product[] = JSON.parse(localStorage.getItem('products') || '[]');
 
     // Set end of day for the 'to' date for inclusive filtering
     const fromDate = date.from;
@@ -70,7 +69,7 @@ export default function UserManagementPage() {
     toDate.setHours(23, 59, 59, 999);
 
     // Filter data based on the selected date range
-    const filteredSales = salesData.filter((sale: any) => {
+    const filteredSales = salesData.filter((sale: Sale) => {
         const saleDate = new Date(sale.date);
         return saleDate >= fromDate && saleDate <= toDate;
     });
@@ -175,7 +174,7 @@ export default function UserManagementPage() {
         </div>
       </div>
       
-      <UserTable onUsersChange={() => {}} />
+      <UserTable />
 
       {downloadHistory.length > 0 && (
         <Card>

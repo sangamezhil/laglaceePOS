@@ -2,6 +2,8 @@
 "use client";
 
 import { useState } from "react";
+import type { Product } from "@/lib/types";
+import { initialProducts } from "@/data/products";
 import { Button } from "@/components/ui/button";
 import { FileUp, PlusCircle } from "lucide-react";
 import InventoryTable from "@/components/admin/InventoryTable";
@@ -19,6 +21,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 
 export default function InventoryPage() {
+  const [products, setProducts] = useState<Product[]>(initialProducts);
   const [isImportOpen, setImportOpen] = useState(false);
   const [importFile, setImportFile] = useState<File | null>(null);
   const { toast } = useToast();
@@ -101,7 +104,7 @@ export default function InventoryPage() {
           </Button>
         </div>
       </div>
-      <InventoryTable />
+      <InventoryTable products={products} setProducts={setProducts} />
     </div>
   );
 }

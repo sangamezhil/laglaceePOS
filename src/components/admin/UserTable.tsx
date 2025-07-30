@@ -40,11 +40,7 @@ const initialUsers: User[] = [
     { id: 2, username: 'cashier', role: 'cashier' },
 ]
 
-interface UserTableProps {
-  onUsersChange: (users: User[]) => void;
-}
-
-const UserTable: FC<UserTableProps> = ({ onUsersChange }) => {
+const UserTable: FC = () => {
   const [users, setUsers] = useState<User[]>(initialUsers);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedUser, setEditedUser] = useState<Partial<User>>({});
@@ -52,10 +48,6 @@ const UserTable: FC<UserTableProps> = ({ onUsersChange }) => {
   const [isResetDialogOpen, setResetDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [newPassword, setNewPassword] = useState("");
-
-  useEffect(() => {
-    onUsersChange(users);
-  }, [users, onUsersChange]);
 
   const handleEdit = (user: User) => {
     setEditingId(user.id);

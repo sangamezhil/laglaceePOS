@@ -24,7 +24,7 @@ import { addActivityLog } from "@/lib/activityLog";
 
 const POSPage: FC = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [products] = useState<Product[]>(initialProducts);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
   const [userRole, setUserRole] = useState('cashier'); // Default to cashier
   const [appName, setAppName] = useState("ShopSwift");
   const [logoUrl, setLogoUrl] = useState("");
@@ -49,6 +49,13 @@ const POSPage: FC = () => {
     if (!localStorage.getItem('sales')) {
       localStorage.setItem('sales', JSON.stringify(initialSales));
     }
+    
+    // Initialize products in localStorage if not already there
+    if (!localStorage.getItem('products')) {
+        localStorage.setItem('products', JSON.stringify(initialProducts));
+    }
+    setProducts(JSON.parse(localStorage.getItem('products')!));
+
 
   }, []);
 
@@ -145,44 +152,43 @@ const POSPage: FC = () => {
                     </p>
                   </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator />
+                
                  {isAdmin && (
-                  <DropdownMenuItem asChild>
-                    <Link href="/admin/profile">
-                      <User className="mr-2 h-4 w-4" />
-                      <span>Profile</span>
-                    </Link>
-                  </DropdownMenuItem>
-                 )}
-                {isAdmin && <DropdownMenuSeparator />}
-                 {isAdmin && (
-                  <>
-                     <DropdownMenuItem asChild>
-                      <Link href="/admin/inventory">
+                    <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                        <Link href="/admin/profile">
+                        <User className="mr-2 h-4 w-4" />
+                        <span>Profile</span>
+                        </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                        <Link href="/admin/inventory">
                         <LayoutDashboard className="mr-2 h-4 w-4" />
                         <span>Dashboard</span>
-                      </Link>
+                        </Link>
                     </DropdownMenuItem>
-                     <DropdownMenuItem asChild>
-                      <Link href="/admin/inventory">
+                    <DropdownMenuItem asChild>
+                        <Link href="/admin/inventory">
                         <Package className="mr-2 h-4 w-4" />
                         <span>Inventory</span>
-                      </Link>
+                        </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/admin/users">
+                        <Link href="/admin/users">
                         <Users className="mr-2 h-4 w-4" />
                         <span>Users</span>
-                      </Link>
+                        </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/admin/activity-log">
+                        <Link href="/admin/activity-log">
                         <Activity className="mr-2 h-4 w-4" />
                         <span>Activity Log</span>
-                      </Link>
+                        </Link>
                     </DropdownMenuItem>
-                  </>
-                )}
+                    </>
+                 )}
                 <DropdownMenuItem asChild>
                    <Link href={isAdmin ? "/admin/sales-history" : "/sales-history"}>
                     <History className="mr-2 h-4 w-4" />

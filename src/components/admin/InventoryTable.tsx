@@ -1,9 +1,8 @@
 
 "use client";
 
-import { useState, type FC } from "react";
+import { useState, type FC, useEffect } from "react";
 import type { Product } from "@/lib/types";
-import { initialProducts } from "@/data/products";
 import {
   Table,
   TableBody,
@@ -24,10 +23,18 @@ import { Button } from "@/components/ui/button";
 import { Trash2, Edit, Save } from "lucide-react";
 import { addActivityLog } from "@/lib/activityLog";
 
-const InventoryTable: FC = () => {
-  const [products, setProducts] = useState<Product[]>(initialProducts);
+interface InventoryTableProps {
+    products: Product[];
+    setProducts: (products: Product[]) => void;
+}
+
+const InventoryTable: FC<InventoryTableProps> = ({ products, setProducts }) => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedProduct, setEditedProduct] = useState<Partial<Product>>({});
+
+  useEffect(() => {
+    localStorage.setItem('products', JSON.stringify(products));
+  }, [products]);
 
   const handleEdit = (product: Product) => {
     setEditingId(product.id);

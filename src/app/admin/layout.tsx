@@ -14,7 +14,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+const navLinks = [
+    { href: "/", label: "POS View", icon: LayoutDashboard, adminOnly: false },
+    { href: "/admin/inventory", label: "Inventory", icon: Package, adminOnly: true },
+    { href: "/admin/sales-history", label: "Sales History", icon: History, adminOnly: true },
+    { href: "/admin/users", label: "User Management", icon: Users, adminOnly: true },
+    { href: "/admin/activity-log", label: "Activity Log", icon: Activity, adminOnly: true },
+];
+
+const dropdownLinks = [
+    { href: "/admin/profile", label: "Profile", icon: User, adminOnly: true, separator: true },
+    ...navLinks.map(l => ({ ...l, separator: false })),
+    { href: "/login", label: "Log out", icon: LogOut, adminOnly: false, separator: true },
+]
+
 
 export default function AdminLayout({
   children,
@@ -42,26 +56,12 @@ export default function AdminLayout({
           <Link href="/admin/inventory" className="mr-4">
             <Logo appName={appName} logoUrl={logoUrl}/>
           </Link>
-          <Link href="/" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
-            <LayoutDashboard className="h-4 w-4" />
-            POS View
-          </Link>
-          <Link href="/admin/inventory" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
-            <Package className="h-4 w-4" />
-            Inventory
-          </Link>
-          <Link href="/admin/sales-history" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
-            <History className="h-4 w-4" />
-            Sales History
-          </Link>
-          <Link href="/admin/users" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
-            <Users className="h-4 w-4" />
-            User Management
-          </Link>
-          <Link href="/admin/activity-log" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
-            <Activity className="h-4 w-4" />
-            Activity Log
-          </Link>
+          {navLinks.map((link) => (
+            <Link key={link.href} href={link.href} className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
+                <link.icon className="h-4 w-4" />
+                {link.label}
+            </Link>
+          ))}
         </nav>
         <div className="md:hidden">
             <Logo appName={appName} logoUrl={logoUrl} />
@@ -83,51 +83,16 @@ export default function AdminLayout({
                     </p>
                   </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/admin/profile">
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/">
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    <span>POS View</span>
-                  </Link>
-                </DropdownMenuItem>
-                 <DropdownMenuItem asChild>
-                  <Link href="/admin/inventory">
-                    <Package className="mr-2 h-4 w-4" />
-                    <span>Inventory</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/admin/sales-history">
-                    <History className="mr-2 h-4 w-4" />
-                    <span>Sales History</span>
-                  </Link>
-                </DropdownMenuItem>
-                 <DropdownMenuItem asChild>
-                  <Link href="/admin/users">
-                    <Users className="mr-2 h-4 w-4" />
-                    <span>User Management</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/admin/activity-log">
-                    <Activity className="mr-2 h-4 w-4" />
-                    <span>Activity Log</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/login">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                  </Link>
-                </DropdownMenuItem>
+                
+                {dropdownLinks.map((link, index) => (
+                    (link.separator && <DropdownMenuSeparator key={`sep-${index}`} />),
+                    <DropdownMenuItem key={link.href} asChild>
+                      <Link href={link.href}>
+                        <link.icon className="mr-2 h-4 w-4" />
+                        <span>{link.label}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
         </div>

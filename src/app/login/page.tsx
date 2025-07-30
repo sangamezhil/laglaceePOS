@@ -17,12 +17,14 @@ import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/pos/ShopSwiftLogo";
 import { useToast } from "@/hooks/use-toast";
 import { addActivityLog } from "@/lib/activityLog";
+import { Loader2 } from "lucide-react";
 
 const LoginPage: FC = () => {
   const router = useRouter();
   const { toast } = useToast();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [appName, setAppName] = useState("ShopSwift");
   const [logoUrl, setLogoUrl] = useState("");
 
@@ -48,46 +50,51 @@ const LoginPage: FC = () => {
       });
       return;
     }
+    setIsLoading(true);
 
-    const adminCredentials = { username: "admin", password: "adminpassword" };
-    const cashierCredentials = { username: "cashier", password: "cashierpassword" };
+    // Simulate network delay
+    setTimeout(() => {
+      const adminCredentials = { username: "admin", password: "adminpassword" };
+      const cashierCredentials = { username: "cashier", password: "cashierpassword" };
 
-    let loginSuccess = false;
-    let redirectPath = "";
-    let role = "";
+      let loginSuccess = false;
+      let redirectPath = "";
+      let role = "";
 
-    if (username === adminCredentials.username && password === adminCredentials.password) {
-      loginSuccess = true;
-      redirectPath = "/admin/inventory";
-      role = "admin";
-    } else if (username === cashierCredentials.username && password === cashierCredentials.password) {
-      loginSuccess = true;
-      redirectPath = "/";
-      role = "cashier";
-    }
+      if (username === adminCredentials.username && password === adminCredentials.password) {
+        loginSuccess = true;
+        redirectPath = "/admin/inventory";
+        role = "admin";
+      } else if (username === cashierCredentials.username && password === cashierCredentials.password) {
+        loginSuccess = true;
+        redirectPath = "/";
+        role = "cashier";
+      }
 
-    if (loginSuccess) {
-      localStorage.setItem('userRole', role);
+      if (loginSuccess) {
+        localStorage.setItem('userRole', role);
 
-      addActivityLog({
-        username: role,
-        role: role as 'admin' | 'cashier',
-        action: "Logged In",
-        details: "Successfully authenticated."
-      });
+        addActivityLog({
+          username: role,
+          role: role as 'admin' | 'cashier',
+          action: "Logged In",
+          details: "Successfully authenticated."
+        });
 
-      toast({
-        title: "Login Successful",
-        description: `Logged in as ${role}. Redirecting...`,
-      });
-      router.push(redirectPath);
-    } else {
-      toast({
-        variant: "destructive",
-        title: "Login Failed",
-        description: "Invalid username or password.",
-      });
-    }
+        toast({
+          title: "Login Successful",
+          description: `Logged in as ${role}. Redirecting...`,
+        });
+        router.push(redirectPath);
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: "Invalid username or password.",
+        });
+        setIsLoading(false);
+      }
+    }, 1000);
   };
 
   return (
@@ -104,15 +111,18 @@ const LoginPage: FC = () => {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
-              <Input id="username" type="text" placeholder="Enter your username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+              <Input id="username" type="text" placeholder="Enter your username" value={username} onChange={(e) => setUsername(e.target.value)} required disabled={isLoading} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required disabled={isLoading} />
             </div>
           </CardContent>
           <CardFooter>
-            <Button className="w-full" type="submit">Login</Button>
+            <Button className="w-full" type="submit" disabled={isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isLoading ? "Logging in..." : "Login"}
+            </Button>
           </CardFooter>
         </form>
       </Card>
