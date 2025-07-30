@@ -30,21 +30,26 @@ const ProductGrid: FC<ProductGridProps> = forwardRef<ProductGridHandle, ProductG
     },
   }));
 
+  useEffect(() => {
+    const lowercasedSearchTerm = searchTerm.toLowerCase();
+    if (lowercasedSearchTerm.length > 3) {
+        const product = products.find(p => p.barcode.toLowerCase() === lowercasedSearchTerm);
+        if(product) {
+            onAddToCart(product);
+            setSearchTerm("");
+        }
+    }
+  }, [searchTerm, products, onAddToCart]);
+
   const filteredProducts = useMemo(() => {
     if (!searchTerm) return products;
     const lowercasedSearchTerm = searchTerm.toLowerCase();
-    const product = products.find(p => p.barcode.toLowerCase() === lowercasedSearchTerm);
-    if(product) {
-        onAddToCart(product)
-        setSearchTerm("");
-        return products;
-    }
     return products.filter(
       (p) =>
         p.name.toLowerCase().includes(lowercasedSearchTerm) ||
         p.barcode.toLowerCase().includes(lowercasedSearchTerm)
     );
-  }, [products, searchTerm, onAddToCart]);
+  }, [products, searchTerm]);
 
   return (
     <div className="flex flex-col gap-6">
