@@ -5,12 +5,12 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "TODO: YOUR API KEY",
-  authDomain: "TODO: YOUR AUTH DOMAIN",
-  projectId: "TODO: YOUR PROJECT ID",
-  storageBucket: "TODO: YOUR STORAGE BUCKET",
-  messagingSenderId: "TODO: YOUR MESSAGING SENDER ID",
-  appId: "TODO: YOUR APP ID"
+  "projectId": "shopswift-b6kkq",
+  "appId": "1:818202964801:web:64f9f3f84de57a2c80e7c0",
+  "storageBucket": "shopswift-b6kkq.firebasestorage.app",
+  "apiKey": "AIzaSyB2iYKOsEaaPDpHzD2WToPH3LY6_5nob6E",
+  "authDomain": "shopswift-b6kkq.firebaseapp.com",
+  "messagingSenderId": "818202964801"
 };
 
 // Initialize Firebase
