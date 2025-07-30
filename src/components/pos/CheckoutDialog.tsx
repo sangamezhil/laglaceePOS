@@ -22,7 +22,7 @@ interface CheckoutDialogProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   total: number;
-  onCheckout: (paymentMethod: Sale['paymentMethod']) => void;
+  onCheckout: (saleData: Omit<Sale, 'id' | 'date' | 'items'>) => void;
 }
 
 type PaymentMethod = "Cash" | "UPI" | "Split";
@@ -57,7 +57,10 @@ const CheckoutDialog: FC<CheckoutDialogProps> = ({
         setUpiAmount(total.toFixed(2));
         break;
       case "Split":
-        // Keep existing values or reset to a default split
+        // Reset to a 50/50 split when switching to split
+        const half = (total / 2).toFixed(2);
+        setCashAmount(half);
+        setUpiAmount(half);
         break;
     }
   }, [paymentMethod, total]);
@@ -80,12 +83,20 @@ const CheckoutDialog: FC<CheckoutDialogProps> = ({
     }
   };
 
-  const amountPaid = (parseFloat(cashAmount) || 0) + (parseFloat(upiAmount) || 0);
+  const cashPaid = parseFloat(cashAmount) || 0;
+  const upiPaid = parseFloat(upiAmount) || 0;
+  const amountPaid = cashPaid + upiPaid;
   const isPaymentComplete = amountPaid >= total;
-  const changeDue = (parseFloat(cashAmount) || 0) - total;
+  const changeDue = paymentMethod === 'Cash' ? cashPaid - total : 0;
 
   const handleConfirm = () => {
-    onCheckout(paymentMethod);
+    const saleData: Omit<Sale, 'id' | 'date' | 'items'> = {
+      total,
+      paymentMethod,
+      cashPaid: paymentMethod === 'UPI' ? 0 : cashPaid,
+      upiPaid: paymentMethod === 'Cash' ? 0 : upiPaid,
+    };
+    onCheckout(saleData);
     toast({
       title: "Payment Successful",
       description: `Total amount of Rs.${total.toFixed(2)} has been paid.`,

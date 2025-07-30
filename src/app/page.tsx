@@ -93,13 +93,12 @@ const POSPage: FC = () => {
     setCart([]);
   };
 
-  const handleSuccessfulCheckout = (paymentMethod: Sale['paymentMethod'], total: number) => {
+  const handleSuccessfulCheckout = (saleData: Omit<Sale, 'id' | 'date' | 'items'>) => {
     const newSale: Sale = {
+      ...saleData,
       id: `sale-${Date.now()}`,
       date: new Date().toISOString(),
       items: cart,
-      total: total,
-      paymentMethod: paymentMethod,
     };
 
     const existingSalesString = localStorage.getItem('sales');
@@ -111,7 +110,7 @@ const POSPage: FC = () => {
       username: userRole,
       role: userRole as 'admin' | 'cashier',
       action: "Processed Sale",
-      details: `Sale ID: ${newSale.id.slice(-6)}, Total: Rs.${total.toFixed(2)}`
+      details: `Sale ID: ${newSale.id.slice(-6)}, Total: Rs.${newSale.total.toFixed(2)}`
     });
 
     clearCart();

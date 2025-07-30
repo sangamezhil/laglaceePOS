@@ -84,7 +84,15 @@ const SalesHistoryTable: FC = () => {
 
   const handlePaymentMethodChange = (newMethod: Sale['paymentMethod']) => {
     if (selectedSale) {
-      setSelectedSale({ ...selectedSale, paymentMethod: newMethod });
+      const updatedSale = { ...selectedSale, paymentMethod: newMethod };
+      if (newMethod === 'Cash') {
+        updatedSale.cashPaid = updatedSale.total;
+        updatedSale.upiPaid = 0;
+      } else if (newMethod === 'UPI') {
+        updatedSale.cashPaid = 0;
+        updatedSale.upiPaid = updatedSale.total;
+      }
+      setSelectedSale(updatedSale);
     }
   };
 
@@ -127,18 +135,8 @@ const SalesHistoryTable: FC = () => {
     let upi = 0;
 
     todaysSales.forEach(sale => {
-        switch (sale.paymentMethod) {
-            case 'Cash':
-                cash += sale.total;
-                break;
-            case 'UPI':
-                upi += sale.total;
-                break;
-            case 'Split':
-                cash += sale.total / 2;
-                upi += sale.total / 2;
-                break;
-        }
+      cash += sale.cashPaid ?? 0;
+      upi += sale.upiPaid ?? 0;
     });
     
     const todaysTotal = todaysSales.reduce((acc, sale) => acc + sale.total, 0);
@@ -247,6 +245,18 @@ const SalesHistoryTable: FC = () => {
                     ))}
                   </CardContent>
                 </Card>
+                 {selectedSale.paymentMethod === "Split" && (
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="text-muted-foreground">Cash Paid</p>
+                      <p className="font-medium">Rs.{selectedSale.cashPaid?.toFixed(2)}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">UPI Paid</p>
+                      <p className="font-medium">Rs.{selectedSale.upiPaid?.toFixed(2)}</p>
+                    </div>
+                  </div>
+                 )}
                 <div className="flex justify-end items-center font-bold text-xl">
                   <span className="mr-4 text-muted-foreground">Total:</span>
                   <span>Rs.{selectedSale.total.toFixed(2)}</span>

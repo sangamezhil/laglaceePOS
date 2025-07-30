@@ -15,7 +15,7 @@ interface CartProps {
   onUpdateQuantity: (productId: number, quantity: number) => void;
   onRemoveFromCart: (productId: number) => void;
   onClearCart: () => void;
-  onSuccessfulCheckout: (paymentMethod: Sale['paymentMethod'], total: number) => void;
+  onSuccessfulCheckout: (saleData: Omit<Sale, 'id' | 'date' | 'items'>) => void;
 }
 
 const Cart: FC<CartProps> = ({ cart, onUpdateQuantity, onRemoveFromCart, onClearCart, onSuccessfulCheckout }) => {
@@ -26,8 +26,8 @@ const Cart: FC<CartProps> = ({ cart, onUpdateQuantity, onRemoveFromCart, onClear
   const subtotal = total / (1 + gstRate);
   const tax = total - subtotal;
 
-  const handleCheckout = (paymentMethod: Sale['paymentMethod']) => {
-    onSuccessfulCheckout(paymentMethod, total);
+  const handleCheckout = (saleData: Omit<Sale, 'id' | 'date' | 'items'>) => {
+    onSuccessfulCheckout(saleData);
     setCheckoutOpen(false);
   }
 

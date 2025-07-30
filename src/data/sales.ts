@@ -12,6 +12,8 @@ export const initialSales: Sale[] = [
     ],
     total: 1.99 * 2 + 3.99,
     paymentMethod: "Split",
+    cashPaid: 4.00,
+    upiPaid: 3.97,
   },
   {
     id: "sale-2",
@@ -19,6 +21,8 @@ export const initialSales: Sale[] = [
     items: [{ product: initialProducts[4], quantity: 1 }],
     total: 3.75,
     paymentMethod: "Cash",
+    cashPaid: 3.75,
+    upiPaid: 0,
   },
   {
     id: "sale-3",
@@ -30,6 +34,8 @@ export const initialSales: Sale[] = [
     ],
     total: 4.50 + 5.25 + 4.99,
     paymentMethod: "UPI",
+    cashPaid: 0,
+    upiPaid: 14.74,
   },
    {
     id: "sale-4",
@@ -39,6 +45,8 @@ export const initialSales: Sale[] = [
     ],
     total: 3.20 * 2,
     paymentMethod: "Cash",
+    cashPaid: 6.40,
+    upiPaid: 0,
   },
    {
     id: "sale-5",
@@ -50,6 +58,8 @@ export const initialSales: Sale[] = [
     ],
     total: 2.10 + (2.99*2) + (2.25*4),
     paymentMethod: "Split",
+    cashPaid: 10.00,
+    upiPaid: 7.08,
   },
   {
     id: "sale-today",
@@ -57,5 +67,7 @@ export const initialSales: Sale[] = [
     items: [{ product: initialProducts[0], quantity: 2 }, { product: initialProducts[1], quantity: 1}],
     total: (1.99 * 2) + 4.50,
     paymentMethod: "Split",
+    cashPaid: 5.00,
+    upiPaid: 3.48,
   }
 ];

@@ -19,6 +19,8 @@ export interface Sale {
   items: CartItem[];
   total: number;
   paymentMethod: "Cash" | "UPI" | "Split";
+  cashPaid?: number;
+  upiPaid?: number;
 }
 
 export interface User {
