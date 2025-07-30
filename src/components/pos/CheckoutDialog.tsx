@@ -145,7 +145,7 @@ const CheckoutDialog: FC<CheckoutDialogProps> = ({
                   value={cashAmount}
                   onChange={handleCashChange}
                   readOnly={paymentMethod === 'Cash'}
-                  autoFocus={paymentMethod !== 'Split'}
+                  autoFocus={paymentMethod === 'Cash'}
                 />
               </div>
             )}
@@ -169,13 +169,26 @@ const CheckoutDialog: FC<CheckoutDialogProps> = ({
                     Change Due: Rs.{changeDue.toFixed(2)}
                 </div>
             )}
+            {paymentMethod === 'Split' && (
+                 <div className="col-span-2">
+                    <Label htmlFor="cash-amount-split">Cash Amount</Label>
+                    <Input
+                        id="cash-amount-split"
+                        type="number"
+                        placeholder="0.00"
+                        value={cashAmount}
+                        onChange={handleCashChange}
+                        autoFocus
+                    />
+                 </div>
+            )}
           </div>
         </div>
         <DialogFooter>
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button type="submit" onClick={handleConfirm} disabled={!isPaymentComplete}>
+          <Button type="submit" onClick={handleConfirm} disabled={!isPaymentComplete} autoFocus>
             Confirm Payment
           </Button>
         </DialogFooter>
