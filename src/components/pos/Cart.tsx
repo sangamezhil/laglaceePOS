@@ -56,7 +56,7 @@ const Cart: FC<CartProps> = ({ cart, onUpdateQuantity, onRemoveFromCart, onClear
                       <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => onUpdateQuantity(item.product.id, item.quantity - 1)}>
                         <Minus className="h-3 w-3" />
                       </Button>
-                      <Input type="number" value={item.quantity} onChange={(e) => onUpdateQuantity(item.product.id, parseInt(e.target.value) || 0)} className="h-6 w-12 text-center px-1" />
+                      <Input type="number" value={item.quantity} onChange={(e) => onUpdateQuantity(item.product.id, parseFloat(e.target.value) || 0)} className="h-6 w-12 text-center px-1" />
                       <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => onUpdateQuantity(item.product.id, item.quantity + 1)}>
                         <Plus className="h-3 w-3" />
                       </Button>
