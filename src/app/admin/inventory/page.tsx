@@ -2,8 +2,8 @@
 "use client";
 
 import { useState } from "react";
+import * as XLSX from "xlsx";
 import type { Product } from "@/lib/types";
-import { initialProducts } from "@/data/products";
 import { Button } from "@/components/ui/button";
 import { FileUp, PlusCircle } from "lucide-react";
 import InventoryTable from "@/components/admin/InventoryTable";
@@ -19,9 +19,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { addActivityLog } from "@/lib/activityLog";
 
 export default function InventoryPage() {
-  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [products, setProducts] = useState<Product[]>(() => {
+    if (typeof window === 'undefined') return [];
+    const savedProducts = localStorage.getItem('products');
+    return savedProducts ? JSON.parse(savedProducts) : [];
+  });
   const [isImportOpen, setImportOpen] = useState(false);
   const [importFile, setImportFile] = useState<File | null>(null);
   const { toast } = useToast();
@@ -42,17 +47,66 @@ export default function InventoryPage() {
       return;
     }
 
-    // Here you would typically parse the Excel file and update the products state.
-    // For now, we'll just show a success message.
-    console.log("Importing file:", importFile.name);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const data = event.target?.result;
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const json: any[] = XLSX.utils.sheet_to_json(worksheet);
 
-    toast({
-      title: "Import Successful",
-      description: `${importFile.name} has been imported.`,
-    });
+        const newProducts: Product[] = json.map((row, index) => ({
+          id: Date.now() + index, // Generate a unique ID
+          name: row.name || "No Name",
+          price: parseFloat(row.price) || 0,
+          stock: parseInt(row.stock, 10) || 0,
+          category: row.category || "Uncategorized",
+          barcode: row.barcode || `BARCODE-${Date.now() + index}`,
+        }));
 
-    setImportFile(null);
-    setImportOpen(false);
+        setProducts((prevProducts) => {
+            const updatedProducts = [...prevProducts, ...newProducts];
+            localStorage.setItem('products', JSON.stringify(updatedProducts));
+            return updatedProducts;
+        });
+
+        addActivityLog({
+          username: 'admin',
+          role: 'admin',
+          action: 'Imported Products',
+          details: `Imported ${newProducts.length} products from ${importFile.name}`
+        });
+
+        toast({
+          title: "Import Successful",
+          description: `${newProducts.length} products have been imported from ${importFile.name}.`,
+        });
+
+      } catch (error) {
+        console.error("Error parsing Excel file:", error);
+        toast({
+          variant: "destructive",
+          title: "Import Failed",
+          description: "There was an error parsing the Excel file. Please ensure it's in the correct format.",
+        });
+      } finally {
+        setImportFile(null);
+        setImportOpen(false);
+      }
+    };
+
+    reader.onerror = () => {
+         toast({
+          variant: "destructive",
+          title: "File Read Error",
+          description: "Could not read the selected file.",
+        });
+        setImportFile(null);
+        setImportOpen(false);
+    }
+    
+    reader.readAsArrayBuffer(importFile);
   };
 
   return (
@@ -93,7 +147,7 @@ export default function InventoryPage() {
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setImportOpen(false)}>Cancel</Button>
-                <Button onClick={handleImport}>Import Products</Button>
+                <Button onClick={handleImport} disabled={!importFile}>Import Products</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>

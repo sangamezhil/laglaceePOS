@@ -24,7 +24,7 @@ import { addActivityLog } from "@/lib/activityLog";
 
 const POSPage: FC = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [products, setProducts] = useState<Product[]>([]);
   const [userRole, setUserRole] = useState('cashier'); // Default to cashier
   const [appName, setAppName] = useState("ShopSwift");
   const [logoUrl, setLogoUrl] = useState("");
@@ -51,11 +51,25 @@ const POSPage: FC = () => {
     }
     
     // Initialize products in localStorage if not already there
-    if (!localStorage.getItem('products')) {
+    const storedProducts = localStorage.getItem('products');
+    if (!storedProducts) {
         localStorage.setItem('products', JSON.stringify(initialProducts));
+        setProducts(initialProducts);
+    } else {
+        setProducts(JSON.parse(storedProducts));
     }
-    setProducts(JSON.parse(localStorage.getItem('products')!));
 
+    const handleStorageChange = () => {
+        const storedProducts = localStorage.getItem('products');
+        if (storedProducts) {
+            setProducts(JSON.parse(storedProducts));
+        }
+    }
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+        window.removeEventListener('storage', handleStorageChange);
+    };
 
   }, []);
 
