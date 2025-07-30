@@ -5,7 +5,7 @@ import { useState, type FC, useEffect, useRef } from "react";
 import type { Product, CartItem, Sale } from "@/lib/types";
 import { initialProducts } from "@/data/products";
 import ProductGrid, { type ProductGridHandle } from "@/components/pos/ProductGrid";
-import Cart from "@/components/pos/Cart";
+import Cart, { type CartHandle } from "@/components/pos/Cart";
 import { Logo } from "@/components/pos/ShopSwiftLogo";
 import { Button } from "@/components/ui/button";
 import { History, LogOut, LayoutDashboard, Package, Users, Activity, User, ChevronDown } from "lucide-react";
@@ -29,6 +29,7 @@ const POSPage: FC = () => {
   const [appName, setAppName] = useState("ShopSwift");
   const [logoUrl, setLogoUrl] = useState("");
   const productGridRef = useRef<ProductGridHandle>(null);
+  const cartRef = useRef<CartHandle>(null);
 
   useEffect(() => {
     // In a real app, you'd get this from a proper auth context/session.
@@ -87,6 +88,7 @@ const POSPage: FC = () => {
       }
       return [...prevCart, { product, quantity: 1 }];
     });
+    cartRef.current?.focusCheckout();
   };
 
   const updateQuantity = (productId: number, quantity: number) => {
@@ -228,6 +230,7 @@ const POSPage: FC = () => {
           </div>
           <div className="h-full bg-card border-l flex flex-col">
             <Cart
+              ref={cartRef}
               cart={cart}
               onUpdateQuantity={updateQuantity}
               onRemoveFromCart={removeFromCart}

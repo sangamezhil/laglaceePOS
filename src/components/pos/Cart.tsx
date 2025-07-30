@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FC } from "react";
+import { useState, type FC, forwardRef, useImperativeHandle, useRef } from "react";
 import type { CartItem, Sale } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,8 +17,19 @@ interface CartProps {
   onSuccessfulCheckout: (saleData: Omit<Sale, 'id' | 'date' | 'items'>) => void;
 }
 
-const Cart: FC<CartProps> = ({ cart, onUpdateQuantity, onRemoveFromCart, onClearCart, onSuccessfulCheckout }) => {
+export interface CartHandle {
+  focusCheckout: () => void;
+}
+
+const Cart = forwardRef<CartHandle, CartProps>(({ cart, onUpdateQuantity, onRemoveFromCart, onClearCart, onSuccessfulCheckout }, ref) => {
   const [isCheckoutOpen, setCheckoutOpen] = useState(false);
+  const checkoutButtonRef = useRef<HTMLButtonElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    focusCheckout: () => {
+      checkoutButtonRef.current?.focus();
+    },
+  }));
 
   const total = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
   const gstRate = 0.18; // 18% GST
@@ -90,6 +101,7 @@ const Cart: FC<CartProps> = ({ cart, onUpdateQuantity, onRemoveFromCart, onClear
             </div>
           </div>
           <Button 
+            ref={checkoutButtonRef}
             className="w-full mt-4 h-12 text-lg" 
             disabled={cart.length === 0}
             onClick={() => setCheckoutOpen(true)}
@@ -106,6 +118,8 @@ const Cart: FC<CartProps> = ({ cart, onUpdateQuantity, onRemoveFromCart, onClear
       />
     </>
   );
-};
+});
+
+Cart.displayName = "Cart";
 
 export default Cart;
