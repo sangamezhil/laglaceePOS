@@ -69,8 +69,15 @@ const InventoryTable: FC<InventoryTableProps> = ({ products, setProducts }) => {
   
   const handleInputChange = (field: keyof Product, value: string) => {
     const numericFields = ['price', 'stock'];
-    const parsedValue = numericFields.includes(field) ? parseFloat(value) : value;
-    setEditedProduct(prev => ({ ...prev, [field]: parsedValue }));
+    if (numericFields.includes(field)) {
+        // Allow empty string for temporary state, parse to number for state update
+        const parsedValue = value === '' ? 0 : parseFloat(value);
+         if (!isNaN(parsedValue)) {
+            setEditedProduct(prev => ({ ...prev, [field]: parsedValue }));
+        }
+    } else {
+        setEditedProduct(prev => ({ ...prev, [field]: value }));
+    }
   };
 
   return (
