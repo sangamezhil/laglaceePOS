@@ -32,10 +32,6 @@ const InventoryTable: FC<InventoryTableProps> = ({ products, setProducts }) => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedProduct, setEditedProduct] = useState<Partial<Product>>({});
 
-  useEffect(() => {
-    localStorage.setItem('products', JSON.stringify(products));
-  }, [products]);
-
   const handleEdit = (product: Product) => {
     setEditingId(product.id);
     setEditedProduct(product);
@@ -51,7 +47,8 @@ const InventoryTable: FC<InventoryTableProps> = ({ products, setProducts }) => {
         details: `Product: ${productToUpdate.name}`
       });
     }
-    setProducts(products.map(p => p.id === id ? { ...p, ...editedProduct } : p));
+    const updatedProducts = products.map(p => p.id === id ? { ...p, ...editedProduct } as Product : p);
+    setProducts(updatedProducts);
     setEditingId(null);
     setEditedProduct({});
   };
@@ -66,7 +63,8 @@ const InventoryTable: FC<InventoryTableProps> = ({ products, setProducts }) => {
         details: `Product: ${productToDelete.name}`
       });
     }
-    setProducts(products.filter(p => p.id !== id));
+    const updatedProducts = products.filter(p => p.id !== id);
+    setProducts(updatedProducts);
   };
   
   const handleInputChange = (field: keyof Product, value: string) => {

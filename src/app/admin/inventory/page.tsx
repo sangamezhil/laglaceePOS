@@ -37,6 +37,7 @@ export default function InventoryPage() {
   const updateProducts = (newProducts: Product[]) => {
     localStorage.setItem('products', JSON.stringify(newProducts));
     setProducts(newProducts);
+    window.dispatchEvent(new Event('storage'));
   }
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
