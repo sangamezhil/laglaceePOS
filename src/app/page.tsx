@@ -59,10 +59,12 @@ const POSPage: FC = () => {
         setProducts(JSON.parse(storedProducts));
     }
 
-    const handleStorageChange = () => {
-        const storedProducts = localStorage.getItem('products');
-        if (storedProducts) {
-            setProducts(JSON.parse(storedProducts));
+    const handleStorageChange = (event: StorageEvent) => {
+        if (event.key === 'products') {
+            const storedProducts = localStorage.getItem('products');
+            if (storedProducts) {
+                setProducts(JSON.parse(storedProducts));
+            }
         }
     }
     window.addEventListener('storage', handleStorageChange);
